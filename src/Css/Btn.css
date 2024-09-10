@@ -1,0 +1,16 @@
+.Button {
+  color: aqua;
+  width: 800px;
+  height: 70px;
+  font-size: 50px;
+  margin-top: 25px;
+  margin-bottom: 14.5px;
+  border: 0;
+}
+
+.Button:hover {
+  color:  #EBCB8B;
+  cursor: pointer;
+  background-color: #4C566A;
+  
+}

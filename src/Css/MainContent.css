@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: 0;
+  background-color:  #2E3440;
+  font-family: 'digital-7', Courier, monospace;
+  color: #ECEFF4;
+  font-size: 20px;
+}
+
+.window {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.header {
+  color: #ECEFF4;
+  margin: 0 0 15px 0;
+  font-size: 90px;
+} 
