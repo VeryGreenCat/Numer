@@ -2,3 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  margin: 0;
+  padding: 0;
+  background-color:  #2E3440;
+  font-family: 'Delicious Handrawn', Courier, monospace;
+  color: #ECEFF4;
+  font-size: 20px;
+}

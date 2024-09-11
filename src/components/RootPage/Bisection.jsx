@@ -127,27 +127,27 @@ const Bisection =()=>{
     }
 
     return (
+        <Container>
+            <Form >
+                <Form.Group className="mb-3">
+                <Form.Label>Input f(x)</Form.Label>
+                    <input type="text" id="equation" value={Equation} onChange={inputEquation} style={{width:"20%", margin:"0 auto"}} className="form-control"></input>
+                    <Form.Label>Input XL</Form.Label>
+                    <input type="number" id="XL" onChange={inputXL} style={{width:"20%", margin:"0 auto"}} className="form-control"></input>
+                    <Form.Label>Input XR</Form.Label>
+                    <input type="number" id="XR" onChange={inputXR} style={{width:"20%", margin:"0 auto"}} className="form-control"></input>
+                </Form.Group>
+                <Button variant="dark" onClick={calculateRoot}>
+                    Calculate
+                </Button>
+            </Form>
+            <br></br>
+            <h5>Answer = {X.toPrecision(7)}</h5>
             <Container>
-                <Form >
-                    <Form.Group className="mb-3">
-                    <Form.Label>Input f(x)</Form.Label>
-                        <input type="text" id="equation" value={Equation} onChange={inputEquation} style={{width:"20%", margin:"0 auto"}} className="form-control"></input>
-                        <Form.Label>Input XL</Form.Label>
-                        <input type="number" id="XL" onChange={inputXL} style={{width:"20%", margin:"0 auto"}} className="form-control"></input>
-                        <Form.Label>Input XR</Form.Label>
-                        <input type="number" id="XR" onChange={inputXR} style={{width:"20%", margin:"0 auto"}} className="form-control"></input>
-                    </Form.Group>
-                    <Button variant="dark" onClick={calculateRoot}>
-                        Calculate
-                    </Button>
-                </Form>
-                <br></br>
-                <h5>Answer = {X.toPrecision(7)}</h5>
-                <Container>
-                {html}
-                </Container>
-               
+            {html}
             </Container>
+            
+        </Container>
            
     )
 }
