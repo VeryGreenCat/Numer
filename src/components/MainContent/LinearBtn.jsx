@@ -1,8 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
-import "../../Css/Btn.css";
-
 function LinearBtn() {
 
   const navigate = useNavigate();

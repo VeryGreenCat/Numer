@@ -8,8 +8,17 @@
 
 .header {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   color: #ECEFF4;
-  margin: 5% 0 15px 0;
+  margin: 3% 0 4% 0;
   font-size: 90px;
+}
+
+.rootPage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
 }

@@ -47,7 +47,8 @@ const Bisection =()=>{
         var obj={};
         do
         {
-            xm = (xl+xr)/2.0;
+            //xm = (xl+xr)/2.0;
+            xm = (xl*(evaluate(Equation, {x:xr})) - xr*(evaluate(Equation, {x:xl})))/(evaluate(Equation, {x:xr}) - evaluate(Equation, {x:xl}));
             scope = {
                 x:xr,
             }
@@ -129,19 +130,13 @@ const Bisection =()=>{
     return (
         <Container>
             <Form >
-                <Form.Group className="mb-3 flex items-center space-x-4">
-                    <Form.Label>Input f(x):</Form.Label>
-                    <div class="relative w-44 m-3 textInputWrapper">
-                        <input placeholder="Enter Equation" type="text" class="w-full h-9 bg-[#252525] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all" id="equation" value={Equation} onChange={inputEquation} ></input>
-                    </div>
-                    <Form.Label>Input XL:</Form.Label>
-                    <div class="relative w-44 m-3 textInputWrapper">
-                        <input placeholder="XL" type="text" class="w-full h-9 bg-[#252525] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all" id="XL" onChange={inputXL} ></input>
-                    </div>
-                    <Form.Label>Input XR:</Form.Label>
-                    <div class="relative w-44 m-3 textInputWrapper">
-                        <input placeholder="XR" type="text" class="w-full h-9 bg-[#252525] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all" id="XR" onChange={inputXR} ></input>
-                    </div>
+                <Form.Group className="mb-3">
+                <Form.Label>Input f(x)</Form.Label>
+                    <input type="text" id="equation" value={Equation} onChange={inputEquation} style={{width:"20%", margin:"0 auto"}} className="form-control"></input>
+                    <Form.Label>Input XL</Form.Label>
+                    <input type="number" id="XL" onChange={inputXL} style={{width:"20%", margin:"0 auto"}} className="form-control"></input>
+                    <Form.Label>Input XR</Form.Label>
+                    <input type="number" id="XR" onChange={inputXR} style={{width:"20%", margin:"0 auto"}} className="form-control"></input>
                 </Form.Group>
                 <Button variant="dark" onClick={calculateRoot}>
                     Calculate

@@ -11,8 +11,10 @@ function MainContent() {
     <>
     <div className="window">
       <h1 className='header'>NUMERICAL METHOD</h1>
-      <RootBtn />
-      <RootBtn />
+      <div className="flex flex-col space-y-5">
+        <RootBtn />
+        <RootBtn />
+      </div>
     </div>
     </>
   )
