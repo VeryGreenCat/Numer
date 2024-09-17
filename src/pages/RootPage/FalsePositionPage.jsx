@@ -1,6 +1,6 @@
 import React from 'react'
 
-import FalsePosition from "../components/RootPage/FalsePosition";
+import FalsePosition from "../../components/RootOfEquation/FalsePosition";
 
 function FalsePositionPage() {
   return (

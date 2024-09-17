@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Bisection from "../components/RootPage/Bisection";
+import Bisection from "../../components/RootOfEquation/Bisection";
 
 function BisectionPage() {
   return (

@@ -3,12 +3,12 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter , Routes, Route } from 'react-router-dom'
 
 //import pages
-import GraphicalPage from "./pages/GraphicalPage.jsx";
-import BisectionPage from "./pages/BisectionPage.jsx";
-import FalsePositionPage from "./pages/FalsePositionPage.jsx";
-import OnePointPage from "./pages/OnePointPage.jsx";
-import NewtonRaphsonPage from "./pages/NewtonRaphsonPage.jsx";
-import SecantPage from "./pages/SecantPage.jsx";
+import GraphicalPage from "./pages/RootPage/GraphicalPage.jsx";
+import BisectionPage from "./pages/RootPage/BisectionPage.jsx";
+import FalsePositionPage from "./pages/RootPage/FalsePositionPage.jsx";
+import OnePointPage from "./pages/RootPage/OnePointPage.jsx";
+import NewtonRaphsonPage from "./pages/RootPage/NewtonRaphsonPage.jsx";
+import SecantPage from "./pages/RootPage/SecantPage.jsx";
 
 //import component
 import MainContent from './pages/MainContent.jsx'

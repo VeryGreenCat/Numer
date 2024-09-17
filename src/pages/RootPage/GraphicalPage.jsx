@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Graphical from "../components/RootPage/Graphical";
+import Graphical from "../../components/RootOfEquation/Graphical";
 
 function GraphicalPage() {
   return (
