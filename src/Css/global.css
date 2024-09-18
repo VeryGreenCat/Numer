@@ -5,8 +5,8 @@
 * {
   margin: 0;
   padding: 0;
-  /* background-color:  #2E3440; */
-  font-family: Courier, 'Courier New', monospace;
+  background-color:  #1E1E1E ; /* disable to make background transparent */
+  font-family: 'Fora Code', monospace, Courier;
   color: #ECEFF4;
   font-size: 20px;
 }
@@ -29,18 +29,18 @@ body {
   
   .textInputWrapper:after {
     @apply absolute left-0 right-0 bottom-[-1px] z-10 pointer-events-none border-b-[2px] scale-x-0;
-    border-bottom-color: #81A1C1 ; /* Assigning accent color directly */
+    border-bottom-color: #569CD6  ; /* Assigning accent color directly */
     content: "";
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
 
   .textInputWrapper:focus-within:before {
-    border-bottom-color: #81A1C1 ; /* Assigning accent color directly */
+    border-bottom-color: #569CD6  ; /* Assigning accent color directly */
   }
   
   .textInputWrapper:focus-within:after {
     @apply scale-x-100;
-    border-bottom-color: #81A1C1 ; /* Assigning accent color directly */
+    border-bottom-color: #569CD6  ; /* Assigning accent color directly */
   }
 
   .textInput::placeholder {

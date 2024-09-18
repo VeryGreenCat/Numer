@@ -158,7 +158,7 @@ const Bisection =()=>{
                         <input placeholder="XR" type="text" className="w-full h-9 bg-[#252525] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all" id="XR" onChange={inputXR} ></input>
                     </div>
                 </Form.Group>
-                <Button variant="dark" className="cursor-pointer transition-all bg-blue-500 text-white px-6 py-2 rounded-lg border-blue-600 border-b-[4px] hover:brightness-110 hover:translate-y-[-2px] active:translate-y-[2px] active:brightness-90" onClick={calculateRoot}>
+                <Button variant="dark" className="cursor-pointer transition-all bg-blue-600 text-white px-6 py-2 rounded-lg border-blue-700 border-b-[4px] hover:brightness-110 hover:translate-y-[-2px] active:translate-y-[2px] active:brightness-90" onClick={calculateRoot}>
                     Calculate
                 </Button>
             </Form>
