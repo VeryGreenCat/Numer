@@ -2,7 +2,12 @@ import React from 'react'
 
 function NewtonRaphsonPage() {
   return (
-    <div>NewtonRaphsonPage</div>
+    <>
+      <div className="rootPage">
+        <h1 className="header">Newton Raphson !</h1>
+        {/* <NewtonRaphson /> */}
+      </div>
+    </>
   )
 }
 
