@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button, Container, Form, Table } from "react-bootstrap";
 import { evaluate } from 'mathjs'
 
@@ -115,6 +115,21 @@ const Bisection =()=>{
         setXR(event.target.value)
     }
 
+    //EnterPress
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            calculateRoot();
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyPress);
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [handleKeyPress]);
+    //EnterPress
+
     const calculateRoot = () =>{
         const xlnum = parseFloat(XL)
         const xrnum = parseFloat(XR)
@@ -128,29 +143,29 @@ const Bisection =()=>{
 
     return (
         <Container>
-            <Form >
-                <Form.Group className="mb-3 flex items-center space-x-4">
+            <Form>
+                <Form.Group className="mb-3 flex items-center justify-center space-x-4">
                     <Form.Label>Input f(x):</Form.Label>
-                    <div class="relative w-44 m-3 textInputWrapper">
-                        <input placeholder="Enter Equation" type="text" class="w-full h-9 bg-[#252525] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all" id="equation" value={Equation} onChange={inputEquation} ></input>
+                    <div className="relative w-44 m-3 textInputWrapper">
+                        <input placeholder="Enter Equation" type="text" className="w-full h-9 bg-[#252525] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all" id="equation" value={Equation} onChange={inputEquation} ></input>
                     </div>
                     <Form.Label>Input XL:</Form.Label>
-                    <div class="relative w-44 m-3 textInputWrapper">
-                        <input placeholder="XL" type="text" class="w-full h-9 bg-[#252525] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all" id="XL" onChange={inputXL} ></input>
+                    <div className="relative w-44 m-3 textInputWrapper">
+                        <input placeholder="XL" type="text" className="w-full h-9 bg-[#252525] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all" id="XL" onChange={inputXL} ></input>
                     </div>
                     <Form.Label>Input XR:</Form.Label>
-                    <div class="relative w-44 m-3 textInputWrapper">
-                        <input placeholder="XR" type="text" class="w-full h-9 bg-[#252525] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all" id="XR" onChange={inputXR} ></input>
+                    <div className="relative w-44 m-3 textInputWrapper">
+                        <input placeholder="XR" type="text" className="w-full h-9 bg-[#252525] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all" id="XR" onChange={inputXR} ></input>
                     </div>
                 </Form.Group>
-                <Button variant="dark" onClick={calculateRoot}>
+                <Button className="cursor-pointer transition-all bg-blue-500 text-white px-6 py-2 rounded-lg border-blue-600 border-b-[4px] hover:brightness-110 hover:translate-y-[-2px] active:translate-y-[2px] active:brightness-90" onClick={calculateRoot}>
                     Calculate
                 </Button>
             </Form>
             <br></br>
-            <h5>Answer = {X.toPrecision(7)}</h5>
-            <Container>
-            {html}
+            <Container className="flex flex-col items-center justify-center">
+                <h5>Answer = {X.toPrecision(7)}</h5>
+                {html}
             </Container>
             
         </Container>
