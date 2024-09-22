@@ -9,13 +9,13 @@ import "../Css/MainContent.css"
 function MainContent() {
   return (
     <>
-    <div className="window">
-      <h1 className='header'>NUMERICAL METHOD</h1>
-      <div className="flex flex-col space-y-5">
-        <RootBtn />
-        <RootBtn />
+      <div className="window">
+        <h1 className='header'>Numerical Method</h1>
+        <div className="flex flex-col space-y-5">
+          <RootBtn />
+          <RootBtn />
+        </div>
       </div>
-    </div>
     </>
   )
 }

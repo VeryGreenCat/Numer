@@ -4,7 +4,7 @@ function SecantPage() {
   return (
     <>
       <div className="rootPage">
-        <h1 className="header">Secant !</h1>
+        <h1 className="header">Secant</h1>
         {/* <Secant /> */}
       </div>
     </>

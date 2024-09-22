@@ -1,156 +1,197 @@
-import { useState } from "react"
-import { Button, Container, Form, Table } from "react-bootstrap";
-import { evaluate } from 'mathjs'
+import { useState, useEffect } from "react";
+import { evaluate, i } from "mathjs";
+import FalsePositionTable from "./Table/FalsePositionTable.jsx";
 
-const Bisection =()=>{
-    const print = () =>{
-        console.log(data)
-        setValueIter(data.map((x)=>x.iteration));
-        setValueXl(data.map((x)=>x.Xl));
-        setValueXm(data.map((x)=>x.Xm));
-        setValueXr(data.map((x)=>x.Xr));
-        return(
-            <Container>
-                <Table striped bordered hover variant="dark">
-                    <thead>
-                        <tr>
-                            <th width="10%">Iteration</th>
-                            <th width="30%">XL</th>
-                            <th width="30%">XM</th>
-                            <th width="30%">XR</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.map((element, index)=>{
-                            return  (
-                            <tr key={index}>
-                                <td>{element.iteration}</td>
-                                <td>{element.Xl}</td>
-                                <td>{element.Xm}</td>
-                                <td>{element.Xr}</td>
-                            </tr>)
-                        })}
-                    </tbody>
-                </Table>
-            </Container>
-           
-        );
-    }
+const FalsePosition = () => {
+	const error = (xOld, xNew) => Math.abs((xNew - xOld) / xNew) * 100;
 
-    const error =(xold, xnew)=> Math.abs((xnew-xold)/xnew)*100;
-   
-    const Calbisection = (xl, xr) => {
-        var xm,fXm,fXr,ea,scope;
-        var iter = 0;
-        var MAX = 50;
-        const e = 0.00001;
-        var obj={};
-        do
-        {
-            //xm = (xl+xr)/2.0;
-            xm = (xl*(evaluate(Equation, {x:xr})) - xr*(evaluate(Equation, {x:xl})))/(evaluate(Equation, {x:xr}) - evaluate(Equation, {x:xl}));
-            scope = {
-                x:xr,
-            }
-            fXr = evaluate(Equation, scope)
+	const CalfalsePosition = (xl, xr, es) => {
+		let xi, fXl, fXi, fXr, ea, scope;
+		let iter = 0;
+		let MAX = 500;
+		const e = es;
+		let obj = {};
 
-            scope = {
-                x:xm,
-            }
-            fXm = evaluate(Equation, scope)
+		do {
+			iter++;
 
-            iter ++;
-            if (fXm*fXr > 0)
-            {
-                ea = error(xr, xm);
-                obj = {
-                    iteration:iter,
-                    Xl:xl,
-                    Xm:xm,
-                    Xr:xr
-                }
-                data.push(obj)
-                xr = xm;
-            }
-            else if (fXm*fXr < 0)
-            {
-                ea = error(xl, xm);
-                obj = {
-                    iteration:iter,
-                    Xl:xl,
-                    Xm:xm,
-                    Xr:xr
-                }
-                data.push(obj)
-                xl = xm;
-            }
-        }while(ea>e && iter<MAX)
-        setX(xm)
-    }
+			scope = {
+				x: xr, //xr is the variable
+			};
+			fXr = evaluate(Equation, scope);
 
-    const data =[];
-    const [valueIter, setValueIter] = useState([]);
-    const [valueXl, setValueXl] = useState([]);
-    const [valueXm, setValueXm] = useState([]);
-    const [valueXr, setValueXr] = useState([]);
-     
-   
-    const [html, setHtml] = useState(null);
-    const [Equation,setEquation] = useState("(x^4)-13")
-    const [X,setX] = useState(0)
-    const [XL,setXL] = useState(0)
-    const [XR,setXR] = useState(0)
+			scope = {
+				x: xl, //xl is the variable
+			};
+			fXl = evaluate(Equation, scope);
 
-    const inputEquation = (event) =>{
-        console.log(event.target.value)
-        setEquation(event.target.value)
-    }
+			xi = (xl * fXr - xr * fXl) / (fXr - fXl);
 
-    const inputXL = (event) =>{
-        console.log(event.target.value)
-        setXL(event.target.value)
-    }
+			scope = {
+				x: xi, //xi is the variable
+			};
+			fXi = evaluate(Equation, scope);
 
-    const inputXR = (event) =>{
-        console.log(event.target.value)
-        setXR(event.target.value)
-    }
+			if (fXl * fXi < 0) {
+				ea = error(xr, xi);
+				obj = {
+					iteration: iter,
+					Xl: xl,
+					Xi: xi,
+					Xr: xr,
+					error: ea,
+				};
+				data.push(obj);
 
-    const calculateRoot = () =>{
-        const xlnum = parseFloat(XL)
-        const xrnum = parseFloat(XR)
-        Calbisection(xlnum,xrnum);
-     
-        setHtml(print());
-           
-        console.log(valueIter)
-        console.log(valueXl)
-    }
+				xr = xi;
+			} else if (fXl * fXi > 0) {
+				ea = error(xl, xi);
+				obj = {
+					iteration: iter,
+					Xl: xl,
+					Xi: xi,
+					Xr: xr,
+					error: ea,
+				};
+				data.push(obj);
 
-    return (
-        <Container>
-            <Form >
-                <Form.Group className="mb-3">
-                <Form.Label>Input f(x)</Form.Label>
-                    <input type="text" id="equation" value={Equation} onChange={inputEquation} style={{width:"20%", margin:"0 auto"}} className="form-control"></input>
-                    <Form.Label>Input XL</Form.Label>
-                    <input type="number" id="XL" onChange={inputXL} style={{width:"20%", margin:"0 auto"}} className="form-control"></input>
-                    <Form.Label>Input XR</Form.Label>
-                    <input type="number" id="XR" onChange={inputXR} style={{width:"20%", margin:"0 auto"}} className="form-control"></input>
-                </Form.Group>
-                <Button variant="dark" onClick={calculateRoot}>
-                    Calculate
-                </Button>
-            </Form>
-            <br></br>
-            <h5>Answer = {X.toPrecision(7)}</h5>
-            <Container>
-            {html}
-            </Container>
-            
-        </Container>
-           
-    )
-}
+				xl = xi;
+			}
+		} while (ea > e && iter < MAX);
+		setAns(xi);
+		setIteration(iter); //for displaying iteration
+		setInaccuracy(ea); //for displaying error
+	};
 
-export default Bisection
+	const data = [];
+	const [Equation, setEquation] = useState("(x^4)-13");
+	const [XL, setXL] = useState(0);
+	const [XR, setXR] = useState(5);
+	const [Es, setEs] = useState("0.000001");
+	const [Ans, setAns] = useState(0);
+	const [OutputTable, setOutputTable] = useState(null);
+	const [Iteration, setIteration] = useState(0); //for displaying iteration
+	const [inaccuracy, setInaccuracy] = useState(100); //for displaying error
+
+	const inputEquation = (event) => {
+		setEquation(event.target.value);
+	};
+
+	const inputXL = (event) => {
+		setXL(event.target.value);
+	};
+
+	const inputXR = (event) => {
+		setXR(event.target.value);
+	};
+
+	const inputEs = (event) => {
+		setEs(event.target.value);
+	};
+
+	const calculateRoot = () => {
+		console.log(`Equation: ${Equation}`);
+		console.log(`XL: ${XL}`);
+		console.log(`XR: ${XR}`);
+		console.log(`Es: ${Es}`);
+
+		const xlNum = parseFloat(XL);
+		const xrNum = parseFloat(XR);
+		const esNum = parseFloat(Es);
+		CalfalsePosition(xlNum, xrNum, esNum);
+
+		setOutputTable(<FalsePositionTable data={data} />);
+
+		console.log(data);
+	};
+
+	// Handle Enter Key Press
+	const handleKeyPress = (event) => {
+		if (event.key === "Enter") {
+			calculateRoot();
+		}
+	};
+
+	useEffect(() => {
+		document.addEventListener("keydown", handleKeyPress);
+		return () => {
+			document.removeEventListener("keydown", handleKeyPress);
+		};
+	}, [handleKeyPress]);
+
+	return (
+		<div className="max-w-5xl mx-auto">
+			<div className="container p-4">
+				<form>
+					<div className="mb-4 flex justify-center space-x-4 items-center">
+						<label className="text-base text-white">f(x):</label>
+						<div className="relative w-44 textInputWrapper">
+							<input
+								placeholder="Enter Equation"
+								type="text"
+								className="w-full h-9 bg-[#262626] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
+								id="equation"
+								value={Equation}
+								onClick={() => setEquation("")}
+								onChange={inputEquation}
+							/>
+						</div>
+						<label className="text-base text-white">XL:</label>
+						<div className="relative w-44 m-3 textInputWrapper">
+							<input
+								placeholder="XL"
+								type="text"
+								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
+								id="XL"
+								value={XL}
+								onClick={() => setXL("")}
+								onChange={inputXL}
+							/>
+						</div>
+						<label className="text-base text-white">XR:</label>
+						<div className="relative w-44 m-3 textInputWrapper">
+							<input
+								placeholder="XR"
+								type="text"
+								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
+								id="XR"
+								value={XR}
+								onClick={() => setXR("")}
+								onChange={inputXR}
+							/>
+						</div>
+						<label className="text-base text-white">Error:</label>
+						<div className="relative w-44 m-3 textInputWrapper">
+							<input
+								placeholder="Error Stop"
+								type="text"
+								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
+								id="Es"
+								value={Es}
+								onClick={() => setEs("")}
+								onChange={inputEs}
+							/>
+						</div>
+					</div>
+
+					<button
+						type="button"
+						className="mb-4 w-min cursor-pointer transition-all bg-blue-600 text-white px-6 py-2 rounded-lg border-blue-700 border-b-[4px] hover:brightness-110 hover:translate-y-[-2px] active:translate-y-[2px] active:brightness-90"
+						onClick={calculateRoot}
+					>
+						Calculate
+					</button>
+				</form>
+
+				<h5 className="mb-4 text-white bg-gray-800 rounded-lg p-4 border-2 border-[#262626] flex justify-center">
+					Answer = {Ans.toPrecision(7)} | Total Iteration ={" "}
+					{Iteration == 500 ? "Max" : Iteration} | Error ={" "}
+					{inaccuracy.toPrecision(7)}
+				</h5>
+				{OutputTable}
+			</div>
+		</div>
+	);
+};
+
+export default FalsePosition;

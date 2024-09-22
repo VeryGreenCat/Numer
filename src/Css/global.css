@@ -5,7 +5,6 @@
 * {
   margin: 0;
   padding: 0;
-  background-color:  #1E1E1E ; /* disable to make background transparent */
   font-family: 'Fora Code', monospace, Courier;
   color: #ECEFF4;
   font-size: 20px;
@@ -13,11 +12,12 @@
 
 /* for background */
 body { 
-  background-image: url("../blackBoard.jpg");
+  /* background-image: url("../blackBoard.jpg");
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed;
-  background-size: cover;
+  background-size: cover; */
+  background-color:  #1E1E1E ; /* disable to make background transparent */
 }
 
 @layer utilities {
