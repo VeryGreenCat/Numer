@@ -7,7 +7,8 @@ const FalsePosition = () => {
 	const error = (xOld, xNew) => Math.abs((xNew - xOld) / xNew) * 100;
 
 	const CalfalsePosition = (xl, xr, es) => {
-		let xi, fXl, fXi, fXr, ea, scope;
+		let xi, fXl, fXi, fXr, scope;
+		let ea = 100;
 		let iter = 0;
 		const e = es;
 		let obj = {};

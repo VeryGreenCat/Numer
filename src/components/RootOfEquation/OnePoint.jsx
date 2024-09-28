@@ -1,67 +1,43 @@
 import { useState, useEffect } from "react";
-import { evaluate } from "mathjs";
-import BisectionTable from "./Table/BisectionTable.jsx";
+import { evaluate, derivative } from "mathjs";
+import OnePointTable from "./Table/OnePointTable.jsx";
 
-const Bisection = () => {
+const OnePoint = () => {
 	let MAX = 50; //max iteration
 	const error = (xOld, xNew) => Math.abs((xNew - xOld) / xNew) * 100;
 
-	const Calbisection = (xl, xr, es) => {
-		let xm, fXm, fXr, scope;
-		let ea = 100;
+	const CalOnePoint = (x0, es) => {
+		let x1;
+		const fx = (x) => evaluate(Equation, { x: x });
+		let e = es;
+		let eOld = 100;
+		let eNew = 100;
 		let iter = 0;
-		const e = es;
 		let obj = {};
 
 		do {
-			xm = (xl + xr) / 2.0;
 			iter++;
-
-			scope = {
-				x: xr, //xr is the variable
+			x1 = fx(x0);
+			eNew = error(x0, x1);
+			obj = {
+				iteration: iter,
+				X: x0,
+				Y: fx(x0),
+				error: eNew,
 			};
-			fXr = evaluate(Equation, scope);
+			data.push(obj);
+			x0 = x1;
+			eOld = eNew;
+		} while (eNew > e && iter < MAX);
 
-			scope = {
-				x: xm, //xm is the variable
-			};
-			fXm = evaluate(Equation, scope);
-
-			if (fXm * fXr > 0) {
-				ea = error(xr, xm);
-				obj = {
-					iteration: iter,
-					Xl: xl,
-					Xm: xm,
-					Xr: xr,
-					error: ea,
-				};
-				data.push(obj);
-
-				xr = xm;
-			} else if (fXm * fXr < 0) {
-				ea = error(xl, xm);
-				obj = {
-					iteration: iter,
-					Xl: xl,
-					Xm: xm,
-					Xr: xr,
-					error: ea,
-				};
-				data.push(obj);
-
-				xl = xm;
-			}
-		} while (ea > e && iter < MAX);
-		setAns(xm);
+		setAns(x0);
 		setIteration(iter); //for displaying iteration
-		setInaccuracy(ea); //for displaying error
+		setInaccuracy(eOld); //for displaying error
 	};
 
 	const data = [];
-	const [Equation, setEquation] = useState("(x^4)-13");
-	const [XL, setXL] = useState(0);
-	const [XR, setXR] = useState(10);
+	const [Equation, setEquation] = useState("cos(x)");
+	const [X0, setX0] = useState(2);
 	const [Es, setEs] = useState("0.000001");
 	const [Ans, setAns] = useState(0);
 	const [OutputTable, setOutputTable] = useState(null);
@@ -72,12 +48,8 @@ const Bisection = () => {
 		setEquation(event.target.value);
 	};
 
-	const inputXL = (event) => {
-		setXL(event.target.value);
-	};
-
-	const inputXR = (event) => {
-		setXR(event.target.value);
+	const inputX0 = (event) => {
+		setX0(event.target.value);
 	};
 
 	const inputEs = (event) => {
@@ -85,21 +57,19 @@ const Bisection = () => {
 	};
 
 	const calculateRoot = () => {
-		if (Equation === "" || XL === "" || XR === "" || Es === "") {
+		if (Equation === "" || X0 === "" || Es === "") {
 			alert("Please fill all the fields");
 			return;
 		}
 		console.log(`Equation: ${Equation}`);
-		console.log(`XL: ${XL}`);
-		console.log(`XR: ${XR}`);
+		console.log(`X0: ${X0}`);
 		console.log(`Es: ${Es}`);
 
-		const xlNum = parseFloat(XL);
-		const xrNum = parseFloat(XR);
+		const x0Num = parseFloat(X0);
 		const esNum = parseFloat(Es);
-		Calbisection(xlNum, xrNum, esNum);
+		CalOnePoint(x0Num, esNum);
 
-		setOutputTable(<BisectionTable data={data} />);
+		setOutputTable(<OnePointTable data={data} />);
 
 		console.log(data);
 	};
@@ -135,28 +105,16 @@ const Bisection = () => {
 								onChange={inputEquation}
 							/>
 						</div>
-						<label className="text-base text-white">XL:</label>
+						<label className="text-base text-white">X0:</label>
 						<div className="relative w-44 m-3 textInputWrapper">
 							<input
-								placeholder="XL"
+								placeholder="X0"
 								type="text"
 								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
-								id="XL"
-								value={XL}
-								onClick={() => setXL("")}
-								onChange={inputXL}
-							/>
-						</div>
-						<label className="text-base text-white">XR:</label>
-						<div className="relative w-44 m-3 textInputWrapper">
-							<input
-								placeholder="XR"
-								type="text"
-								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
-								id="XR"
-								value={XR}
-								onClick={() => setXR("")}
-								onChange={inputXR}
+								id="X0"
+								value={X0}
+								onClick={() => setX0("")}
+								onChange={inputX0}
 							/>
 						</div>
 						<label className="text-base text-white">Error:</label>
@@ -193,4 +151,4 @@ const Bisection = () => {
 	);
 };
 
-export default Bisection;
+export default OnePoint;
