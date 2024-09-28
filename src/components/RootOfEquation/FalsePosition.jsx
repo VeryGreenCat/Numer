@@ -3,12 +3,12 @@ import { evaluate, i } from "mathjs";
 import FalsePositionTable from "./Table/FalsePositionTable.jsx";
 
 const FalsePosition = () => {
+	let MAX = 50; //max iteration
 	const error = (xOld, xNew) => Math.abs((xNew - xOld) / xNew) * 100;
 
 	const CalfalsePosition = (xl, xr, es) => {
 		let xi, fXl, fXi, fXr, ea, scope;
 		let iter = 0;
-		let MAX = 500;
 		const e = es;
 		let obj = {};
 
@@ -90,6 +90,11 @@ const FalsePosition = () => {
 	};
 
 	const calculateRoot = () => {
+		if (Equation === "" || XL === "" || XR === "" || Es === "") {
+			alert("Please fill all the fields");
+			return;
+		}
+
 		console.log(`Equation: ${Equation}`);
 		console.log(`XL: ${XL}`);
 		console.log(`XR: ${XR}`);
@@ -185,7 +190,7 @@ const FalsePosition = () => {
 
 				<h5 className="mb-4 text-white bg-gray-800 rounded-lg p-4 border-2 border-[#262626] flex justify-center">
 					Answer = {Ans.toPrecision(7)} | Total Iteration ={" "}
-					{Iteration == 500 ? "Max" : Iteration} | Error ={" "}
+					{Iteration == MAX ? "Max" : Iteration} | Error ={" "}
 					{inaccuracy.toPrecision(7)}
 				</h5>
 				{OutputTable}

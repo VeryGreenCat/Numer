@@ -3,12 +3,12 @@ import { evaluate } from "mathjs";
 import BisectionTable from "./Table/BisectionTable.jsx";
 
 const Bisection = () => {
+	let MAX = 50; //max iteration
 	const error = (xOld, xNew) => Math.abs((xNew - xOld) / xNew) * 100;
 
 	const Calbisection = (xl, xr, es) => {
 		let xm, fXm, fXr, ea, scope;
 		let iter = 0;
-		let MAX = 500;
 		const e = es;
 		let obj = {};
 
@@ -84,6 +84,10 @@ const Bisection = () => {
 	};
 
 	const calculateRoot = () => {
+		if (Equation === "" || XL === "" || XR === "" || Es === "") {
+			alert("Please fill all the fields");
+			return;
+		}
 		console.log(`Equation: ${Equation}`);
 		console.log(`XL: ${XL}`);
 		console.log(`XR: ${XR}`);
@@ -179,7 +183,7 @@ const Bisection = () => {
 
 				<h5 className="mb-4 text-white bg-gray-800 rounded-lg p-4 border-2 border-[#262626] flex justify-center">
 					Answer = {Ans.toPrecision(7)} | Total Iteration ={" "}
-					{Iteration == 500 ? "Max" : Iteration} | Error ={" "}
+					{Iteration == MAX ? "Max" : Iteration} | Error ={" "}
 					{inaccuracy.toPrecision(7)}
 				</h5>
 				{OutputTable}
