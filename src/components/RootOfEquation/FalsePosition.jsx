@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { evaluate, i } from "mathjs";
+import { evaluate } from "mathjs";
 import FalsePositionTable from "./Table/FalsePositionTable.jsx";
 
 const FalsePosition = () => {
@@ -133,7 +133,7 @@ const FalsePosition = () => {
 						<label className="text-base text-white">f(x):</label>
 						<div className="relative w-44 textInputWrapper">
 							<input
-								placeholder="Enter Equation"
+								placeholder="(x^4)-13"
 								type="text"
 								className="w-full h-9 bg-[#262626] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="equation"
@@ -145,7 +145,7 @@ const FalsePosition = () => {
 						<label className="text-base text-white">XL:</label>
 						<div className="relative w-44 m-3 textInputWrapper">
 							<input
-								placeholder="XL"
+								placeholder="0"
 								type="text"
 								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="XL"
@@ -157,7 +157,7 @@ const FalsePosition = () => {
 						<label className="text-base text-white">XR:</label>
 						<div className="relative w-44 m-3 textInputWrapper">
 							<input
-								placeholder="XR"
+								placeholder="5"
 								type="text"
 								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="XR"
@@ -169,7 +169,7 @@ const FalsePosition = () => {
 						<label className="text-base text-white">Error:</label>
 						<div className="relative w-44 m-3 textInputWrapper">
 							<input
-								placeholder="Error Stop"
+								placeholder="0.000001"
 								type="text"
 								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="Es"

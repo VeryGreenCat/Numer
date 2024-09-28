@@ -16,7 +16,8 @@ const Graphical = () => {
 			scope;
 		let ea = 100;
 		let iter = 0;
-		let step = 1;
+		//let step = 1;
+		let step = Math.abs(xr - xl);
 		const e = es;
 		let obj = {};
 
@@ -80,8 +81,8 @@ const Graphical = () => {
 
 	const data = [];
 	const [Equation, setEquation] = useState("43x-180");
-	const [XL, setXL] = useState(3);
-	const [XR, setXR] = useState(5);
+	const [XL, setXL] = useState(4);
+	const [XR, setXR] = useState(4.5);
 	const [Es, setEs] = useState("0.001");
 	const [Ans, setAns] = useState(0);
 	const [OutputTable, setOutputTable] = useState(null);
@@ -146,7 +147,7 @@ const Graphical = () => {
 						<label className="text-base text-white">f(x):</label>
 						<div className="relative w-44 textInputWrapper">
 							<input
-								placeholder="Enter Equation"
+								placeholder="43x-180"
 								type="text"
 								className="w-full h-9 bg-[#262626] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="equation"
@@ -158,7 +159,7 @@ const Graphical = () => {
 						<label className="text-base text-white">XL:</label>
 						<div className="relative w-44 m-3 textInputWrapper">
 							<input
-								placeholder="XL"
+								placeholder="4"
 								type="text"
 								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="XL"
@@ -170,7 +171,7 @@ const Graphical = () => {
 						<label className="text-base text-white">XR:</label>
 						<div className="relative w-44 m-3 textInputWrapper">
 							<input
-								placeholder="XR"
+								placeholder="4.5"
 								type="text"
 								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="XR"
@@ -182,7 +183,7 @@ const Graphical = () => {
 						<label className="text-base text-white">Error:</label>
 						<div className="relative w-44 m-3 textInputWrapper">
 							<input
-								placeholder="Error Stop"
+								placeholder="0.001"
 								type="text"
 								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="Es"

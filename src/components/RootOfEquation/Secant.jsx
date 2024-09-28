@@ -1,67 +1,42 @@
 import { useState, useEffect } from "react";
 import { evaluate } from "mathjs";
-import BisectionTable from "./Table/BisectionTable.jsx";
+import SecantTable from "./Table/SecantTable.jsx";
 
-const Bisection = () => {
+const Secant = () => {
 	let MAX = 50; //max iteration
 	const error = (xOld, xNew) => Math.abs((xNew - xOld) / xNew) * 100;
 
-	const Calbisection = (xl, xr, es) => {
-		let xm, fXm, fXr, scope;
+	const CalSecant = (x0, x1, es) => {
+		let xi;
+		let obj = {};
 		let ea = 100;
 		let iter = 0;
-		const e = es;
-		let obj = {};
+		const fx = (x) => evaluate(Equation, { x: x });
 
 		do {
-			xm = (xl + xr) / 2.0;
 			iter++;
-
-			scope = {
-				x: xr, //xr is the variable
+			xi = x1 - ((x1 - x0) * fx(x1)) / (fx(x1) - fx(x0));
+			ea = error(x1, xi);
+			obj = {
+				iteration: iter,
+				X: x0,
+				Y: fx(x0),
+				error: ea,
 			};
-			fXr = evaluate(Equation, scope);
+			data.push(obj);
+			x0 = x1;
+			x1 = xi;
+		} while (ea > es && iter < MAX);
 
-			scope = {
-				x: xm, //xm is the variable
-			};
-			fXm = evaluate(Equation, scope);
-
-			if (fXm * fXr > 0) {
-				ea = error(xr, xm);
-				obj = {
-					iteration: iter,
-					Xl: xl,
-					Xm: xm,
-					Xr: xr,
-					error: ea,
-				};
-				data.push(obj);
-
-				xr = xm;
-			} else if (fXm * fXr < 0) {
-				ea = error(xl, xm);
-				obj = {
-					iteration: iter,
-					Xl: xl,
-					Xm: xm,
-					Xr: xr,
-					error: ea,
-				};
-				data.push(obj);
-
-				xl = xm;
-			}
-		} while (ea > e && iter < MAX);
-		setAns(xm);
+		setAns(xi);
 		setIteration(iter); //for displaying iteration
 		setInaccuracy(ea); //for displaying error
 	};
 
 	const data = [];
-	const [Equation, setEquation] = useState("(x^4)-13");
-	const [XL, setXL] = useState(0);
-	const [XR, setXR] = useState(10);
+	const [Equation, setEquation] = useState("(x^2)-7");
+	const [X0, setX0] = useState(1);
+	const [X1, setX1] = useState(1.5);
 	const [Es, setEs] = useState("0.000001");
 	const [Ans, setAns] = useState(0);
 	const [OutputTable, setOutputTable] = useState(null);
@@ -72,12 +47,12 @@ const Bisection = () => {
 		setEquation(event.target.value);
 	};
 
-	const inputXL = (event) => {
-		setXL(event.target.value);
+	const inputX0 = (event) => {
+		setX0(event.target.value);
 	};
 
-	const inputXR = (event) => {
-		setXR(event.target.value);
+	const inputX1 = (event) => {
+		setX1(event.target.value);
 	};
 
 	const inputEs = (event) => {
@@ -85,21 +60,22 @@ const Bisection = () => {
 	};
 
 	const calculateRoot = () => {
-		if (Equation === "" || XL === "" || XR === "" || Es === "") {
+		if (Equation === "" || X0 === "" || X1 === "" || Es === "") {
 			alert("Please fill all the fields");
 			return;
 		}
+
 		console.log(`Equation: ${Equation}`);
-		console.log(`XL: ${XL}`);
-		console.log(`XR: ${XR}`);
+		console.log(`X0: ${X0}`);
+		console.log(`X1: ${X1}`);
 		console.log(`Es: ${Es}`);
 
-		const xlNum = parseFloat(XL);
-		const xrNum = parseFloat(XR);
+		const x0Num = parseFloat(X0);
+		const x1Num = parseFloat(X1);
 		const esNum = parseFloat(Es);
-		Calbisection(xlNum, xrNum, esNum);
+		CalSecant(x0Num, x1Num, esNum);
 
-		setOutputTable(<BisectionTable data={data} />);
+		setOutputTable(<SecantTable data={data} />);
 
 		console.log(data);
 	};
@@ -123,10 +99,12 @@ const Bisection = () => {
 			<div className="container p-4">
 				<form>
 					<div className="mb-4 flex justify-center space-x-4 items-center">
-						<label className="text-base text-white">f(x):</label>
+						<label className="text-base text-white">
+							X<sub>i+1</sub> =
+						</label>
 						<div className="relative w-44 textInputWrapper">
 							<input
-								placeholder="(x^4)-13"
+								placeholder="Enter Equation"
 								type="text"
 								className="w-full h-9 bg-[#262626] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="equation"
@@ -135,34 +113,34 @@ const Bisection = () => {
 								onChange={inputEquation}
 							/>
 						</div>
-						<label className="text-base text-white">XL:</label>
+						<label className="text-base text-white">X0:</label>
 						<div className="relative w-44 m-3 textInputWrapper">
 							<input
-								placeholder="0"
+								placeholder="1"
 								type="text"
 								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
-								id="XL"
-								value={XL}
-								onClick={() => setXL("")}
-								onChange={inputXL}
+								id="X0"
+								value={X0}
+								onClick={() => setX0("")}
+								onChange={inputX0}
 							/>
 						</div>
-						<label className="text-base text-white">XR:</label>
+						<label className="text-base text-white">X1:</label>
 						<div className="relative w-44 m-3 textInputWrapper">
 							<input
-								placeholder="10"
+								placeholder="1.5"
 								type="text"
 								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
-								id="XR"
-								value={XR}
-								onClick={() => setXR("")}
-								onChange={inputXR}
+								id="X1"
+								value={X1}
+								onClick={() => setX1("")}
+								onChange={inputX1}
 							/>
 						</div>
 						<label className="text-base text-white">Error:</label>
 						<div className="relative w-44 m-3 textInputWrapper">
 							<input
-								placeholder="0.000001"
+								placeholder="Error Stop"
 								type="text"
 								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="Es"
@@ -193,4 +171,4 @@ const Bisection = () => {
 	);
 };
 
-export default Bisection;
+export default Secant;

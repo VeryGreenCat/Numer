@@ -94,10 +94,12 @@ const NewtonRaphson = () => {
 			<div className="container p-4">
 				<form>
 					<div className="mb-4 flex justify-center space-x-4 items-center">
-						<label className="text-base text-white">f(x):</label>
+						<label className="text-base text-white">
+							X<sub>i+1</sub> =
+						</label>
 						<div className="relative w-44 textInputWrapper">
 							<input
-								placeholder="Enter Equation"
+								placeholder="(x^2)-7"
 								type="text"
 								className="w-full h-9 bg-[#262626] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="equation"
@@ -109,7 +111,7 @@ const NewtonRaphson = () => {
 						<label className="text-base text-white">X0:</label>
 						<div className="relative w-44 m-3 textInputWrapper">
 							<input
-								placeholder="X0"
+								placeholder="2"
 								type="text"
 								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="X0"
@@ -121,7 +123,7 @@ const NewtonRaphson = () => {
 						<label className="text-base text-white">Error:</label>
 						<div className="relative w-44 m-3 textInputWrapper">
 							<input
-								placeholder="Error Stop"
+								placeholder="0.000001"
 								type="text"
 								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="Es"

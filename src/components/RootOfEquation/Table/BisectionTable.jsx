@@ -19,7 +19,7 @@ function BisectionTable({ data }) {
 							XR
 						</th>
 						<th className="px-6 py-4 font-medium text-gray-900 dark:text-white">
-							Error
+							Error (%)
 						</th>
 					</tr>
 				</thead>

@@ -1,6 +1,6 @@
 import React from "react";
 
-function FalsePositionTable({ data }) {
+function SecantTable({ data }) {
 	return (
 		<div className="overflow-x-auto mb-10 rounded-lg">
 			<table className="min-w-full table-auto text-sm text-left text-gray-500 dark:text-gray-400">
@@ -10,13 +10,10 @@ function FalsePositionTable({ data }) {
 							Iteration
 						</th>
 						<th className="px-6 py-4 font-medium text-gray-900 dark:text-white">
-							XL
-						</th>
-						<th className="px-6 py-4 font-medium text-gray-900 dark:text-white">
 							X<sub>i</sub>
 						</th>
 						<th className="px-6 py-4 font-medium text-gray-900 dark:text-white">
-							XR
+							Y<sub>i</sub>
 						</th>
 						<th className="px-6 py-4 font-medium text-gray-900 dark:text-white">
 							Error (%)
@@ -33,13 +30,10 @@ function FalsePositionTable({ data }) {
 								{element.iteration}
 							</td>
 							<td className="text-sm px-6 py-4 whitespace-nowrap">
-								{element.Xl}
+								{element.X}
 							</td>
 							<td className="text-sm px-6 py-4 whitespace-nowrap">
-								{element.Xi}
-							</td>
-							<td className="text-sm px-6 py-4 whitespace-nowrap">
-								{element.Xr}
+								{element.Y}
 							</td>
 							<td className="text-sm px-6 py-4 whitespace-nowrap">
 								{element.error}
@@ -52,4 +46,4 @@ function FalsePositionTable({ data }) {
 	);
 }
 
-export default FalsePositionTable;
+export default SecantTable;
