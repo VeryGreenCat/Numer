@@ -13,6 +13,7 @@ function MainContent() {
 				<h1 className="header">Numerical Method</h1>
 				<div className="flex flex-col space-y-5">
 					<RootBtn />
+					<LinearBtn />
 				</div>
 			</div>
 		</>
