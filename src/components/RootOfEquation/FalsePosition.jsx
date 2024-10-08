@@ -1,8 +1,20 @@
 import { useState, useEffect } from "react";
 import { evaluate } from "mathjs";
 import FalsePositionTable from "./Table/FalsePositionTable.jsx";
+import Plot from "react-plotly.js";
 
 const FalsePosition = () => {
+	const [normalGraphData, setNormalGraphData] = useState([]);
+	const [data, setData] = useState([]);
+	const [Equation, setEquation] = useState("(x^4)-13");
+	const [XL, setXL] = useState(0);
+	const [XR, setXR] = useState(5);
+	const [Es, setEs] = useState("0.000001");
+	const [Ans, setAns] = useState(0);
+	const [OutputTable, setOutputTable] = useState(null);
+	const [Iteration, setIteration] = useState(0); //for displaying iteration
+	const [inaccuracy, setInaccuracy] = useState(100); //for displaying error
+
 	let MAX = 50; //max iteration
 	const error = (xOld, xNew) => Math.abs((xNew - xOld) / xNew) * 100;
 
@@ -12,6 +24,7 @@ const FalsePosition = () => {
 		let iter = 0;
 		const e = es;
 		let obj = {};
+		let tempData = [];
 
 		do {
 			iter++;
@@ -39,10 +52,11 @@ const FalsePosition = () => {
 					iteration: iter,
 					Xl: xl,
 					Xi: xi,
+					Yi: fXi,
 					Xr: xr,
 					error: ea,
 				};
-				data.push(obj);
+				tempData.push(obj);
 
 				xr = xi;
 			} else if (fXl * fXi > 0) {
@@ -51,28 +65,31 @@ const FalsePosition = () => {
 					iteration: iter,
 					Xl: xl,
 					Xi: xi,
+					Yi: fXi,
 					Xr: xr,
 					error: ea,
 				};
-				data.push(obj);
+				tempData.push(obj);
 
 				xl = xi;
 			}
 		} while (ea > e && iter < MAX);
+
+		setData(tempData);
 		setAns(xi);
 		setIteration(iter); //for displaying iteration
 		setInaccuracy(ea); //for displaying error
 	};
 
-	const data = [];
-	const [Equation, setEquation] = useState("(x^4)-13");
-	const [XL, setXL] = useState(0);
-	const [XR, setXR] = useState(5);
-	const [Es, setEs] = useState("0.000001");
-	const [Ans, setAns] = useState(0);
-	const [OutputTable, setOutputTable] = useState(null);
-	const [Iteration, setIteration] = useState(0); //for displaying iteration
-	const [inaccuracy, setInaccuracy] = useState(100); //for displaying error
+	const plotNormalGraph = (xl, xr) => {
+		const x = [];
+		const y = [];
+		for (let i = xl; i <= xr; i += 0.01) {
+			x.push(i);
+			y.push(evaluate(Equation, { x: i }));
+		}
+		return { x, y };
+	};
 
 	const inputEquation = (event) => {
 		setEquation(event.target.value);
@@ -105,6 +122,7 @@ const FalsePosition = () => {
 		const xrNum = parseFloat(XR);
 		const esNum = parseFloat(Es);
 		CalfalsePosition(xlNum, xrNum, esNum);
+		setNormalGraphData(plotNormalGraph(xlNum, xrNum));
 
 		setOutputTable(<FalsePositionTable data={data} />);
 
@@ -124,6 +142,10 @@ const FalsePosition = () => {
 			document.removeEventListener("keydown", handleKeyPress);
 		};
 	}, [handleKeyPress]);
+
+	useEffect(() => {
+		setOutputTable(<FalsePositionTable data={data} />);
+	}, [data]);
 
 	return (
 		<div className="max-w-5xl mx-auto">
@@ -194,6 +216,47 @@ const FalsePosition = () => {
 					{Iteration == MAX ? "Max" : Iteration} | Error ={" "}
 					{inaccuracy.toPrecision(7)}
 				</h5>
+
+				<Plot
+					data={[
+						{
+							x: data.map((inputX) => inputX.Xi),
+							y: data.map((inputY) => inputY.Yi),
+							type: "scatter",
+							mode: "markers",
+							name: "Bisection",
+							marker: { color: "yellow", size: 8 },
+							//line: { color: "red", width: 2 },
+						},
+						{
+							x: normalGraphData.x,
+							y: normalGraphData.y,
+							type: "scatter",
+							mode: "lines",
+							name: "Normal Graph",
+							line: { color: "orange", width: 1 },
+						},
+					]}
+					style={{
+						width: "100%",
+						height: "400px",
+					}}
+					layout={{
+						title: "Bisection",
+						xaxis: { title: "X Axis" },
+						yaxis: { title: "Y Axis" },
+						dragmode: "pan",
+						paper_bgcolor: "black",
+						plot_bgcolor: "black",
+					}}
+					config={{
+						displayModeBar: false, // Hide the modebar
+						scrollZoom: true, // Enable zoom with scroll
+						doubleClick: "reset", // Reset on double-click
+						displaylogo: false, // Hide Plotly logo
+					}}
+				/>
+
 				{OutputTable}
 			</div>
 		</div>

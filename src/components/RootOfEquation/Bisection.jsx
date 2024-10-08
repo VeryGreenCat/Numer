@@ -1,8 +1,20 @@
 import { useState, useEffect } from "react";
 import { evaluate } from "mathjs";
 import BisectionTable from "./Table/BisectionTable.jsx";
+import Plot from "react-plotly.js";
 
 const Bisection = () => {
+	const [normalGraphData, setNormalGraphData] = useState([]);
+	const [data, setData] = useState([]);
+	const [Equation, setEquation] = useState("(x^4)-13");
+	const [XL, setXL] = useState(0);
+	const [XR, setXR] = useState(10);
+	const [Es, setEs] = useState("0.000001");
+	const [Ans, setAns] = useState(0);
+	const [OutputTable, setOutputTable] = useState(null);
+	const [Iteration, setIteration] = useState(0); //for displaying iteration
+	const [inaccuracy, setInaccuracy] = useState(100); //for displaying error
+
 	let MAX = 50; //max iteration
 	const error = (xOld, xNew) => Math.abs((xNew - xOld) / xNew) * 100;
 
@@ -12,6 +24,7 @@ const Bisection = () => {
 		let iter = 0;
 		const e = es;
 		let obj = {};
+		let tempData = [];
 
 		do {
 			xm = (xl + xr) / 2.0;
@@ -33,10 +46,11 @@ const Bisection = () => {
 					iteration: iter,
 					Xl: xl,
 					Xm: xm,
+					Ym: fXm,
 					Xr: xr,
 					error: ea,
 				};
-				data.push(obj);
+				tempData.push(obj);
 
 				xr = xm;
 			} else if (fXm * fXr < 0) {
@@ -45,28 +59,31 @@ const Bisection = () => {
 					iteration: iter,
 					Xl: xl,
 					Xm: xm,
+					Ym: fXm,
 					Xr: xr,
 					error: ea,
 				};
-				data.push(obj);
+				tempData.push(obj);
 
 				xl = xm;
 			}
 		} while (ea > e && iter < MAX);
+
+		setData(tempData);
 		setAns(xm);
 		setIteration(iter); //for displaying iteration
 		setInaccuracy(ea); //for displaying error
 	};
 
-	const data = [];
-	const [Equation, setEquation] = useState("(x^4)-13");
-	const [XL, setXL] = useState(0);
-	const [XR, setXR] = useState(10);
-	const [Es, setEs] = useState("0.000001");
-	const [Ans, setAns] = useState(0);
-	const [OutputTable, setOutputTable] = useState(null);
-	const [Iteration, setIteration] = useState(0); //for displaying iteration
-	const [inaccuracy, setInaccuracy] = useState(100); //for displaying error
+	const plotNormalGraph = (xl, xr) => {
+		const x = [];
+		const y = [];
+		for (let i = xl; i <= xr; i += 0.01) {
+			x.push(i);
+			y.push(evaluate(Equation, { x: i }));
+		}
+		return { x, y };
+	};
 
 	const inputEquation = (event) => {
 		setEquation(event.target.value);
@@ -98,6 +115,7 @@ const Bisection = () => {
 		const xrNum = parseFloat(XR);
 		const esNum = parseFloat(Es);
 		Calbisection(xlNum, xrNum, esNum);
+		setNormalGraphData(plotNormalGraph(xlNum, xrNum));
 
 		setOutputTable(<BisectionTable data={data} />);
 
@@ -117,6 +135,10 @@ const Bisection = () => {
 			document.removeEventListener("keydown", handleKeyPress);
 		};
 	}, [handleKeyPress]);
+
+	useEffect(() => {
+		setOutputTable(<BisectionTable data={data} />);
+	}, [data]);
 
 	return (
 		<div className="max-w-5xl mx-auto">
@@ -187,6 +209,47 @@ const Bisection = () => {
 					{Iteration == MAX ? "Max" : Iteration} | Error ={" "}
 					{inaccuracy.toPrecision(7)}
 				</h5>
+
+				<Plot
+					data={[
+						{
+							x: data.map((inputX) => inputX.Xm),
+							y: data.map((inputY) => inputY.Ym),
+							type: "scatter",
+							mode: "markers",
+							name: "Bisection",
+							marker: { color: "yellow", size: 8 },
+							//line: { color: "red", width: 2 },
+						},
+						{
+							x: normalGraphData.x,
+							y: normalGraphData.y,
+							type: "scatter",
+							mode: "lines",
+							name: "Normal Graph",
+							line: { color: "orange", width: 1 },
+						},
+					]}
+					style={{
+						width: "100%",
+						height: "400px",
+					}}
+					layout={{
+						title: "Bisection",
+						xaxis: { title: "X Axis" },
+						yaxis: { title: "Y Axis" },
+						dragmode: "pan",
+						paper_bgcolor: "black",
+						plot_bgcolor: "black",
+					}}
+					config={{
+						displayModeBar: false, // Hide the modebar
+						scrollZoom: true, // Enable zoom with scroll
+						doubleClick: "reset", // Reset on double-click
+						displaylogo: false, // Hide Plotly logo
+					}}
+				/>
+
 				{OutputTable}
 			</div>
 		</div>

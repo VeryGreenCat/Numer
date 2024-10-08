@@ -1,8 +1,19 @@
 import { useState, useEffect } from "react";
 import { evaluate, derivative } from "mathjs";
 import NewtonRaphsonTable from "./Table/NewtonRaphsonTable.jsx";
+import Plot from "react-plotly.js";
 
 const NewtonRaphson = () => {
+	const [normalGraphData, setNormalGraphData] = useState([]);
+	const [data, setData] = useState([]);
+	const [Equation, setEquation] = useState("(x^2)-7");
+	const [X0, setX0] = useState(2);
+	const [Es, setEs] = useState("0.000001");
+	const [Ans, setAns] = useState(0);
+	const [OutputTable, setOutputTable] = useState(null);
+	const [Iteration, setIteration] = useState(0); //for displaying iteration
+	const [inaccuracy, setInaccuracy] = useState(100); //for displaying error
+
 	let MAX = 50; //max iteration
 	const error = (xOld, xNew) => Math.abs((xNew - xOld) / xNew) * 100;
 
@@ -16,6 +27,7 @@ const NewtonRaphson = () => {
 		let iter = 0;
 		let obj = {};
 		const e = es;
+		let tempData = [];
 
 		do {
 			iter++;
@@ -27,23 +39,25 @@ const NewtonRaphson = () => {
 				Y: fx(x0),
 				error: ea,
 			};
-			data.push(obj);
+			tempData.push(obj);
 			x0 = x1;
 		} while (ea > e && iter < MAX);
 
+		setData(tempData);
 		setAns(x0);
 		setIteration(iter); //for displaying iteration
 		setInaccuracy(ea); //for displaying error
 	};
 
-	const data = [];
-	const [Equation, setEquation] = useState("(x^2)-7");
-	const [X0, setX0] = useState(2);
-	const [Es, setEs] = useState("0.000001");
-	const [Ans, setAns] = useState(0);
-	const [OutputTable, setOutputTable] = useState(null);
-	const [Iteration, setIteration] = useState(0); //for displaying iteration
-	const [inaccuracy, setInaccuracy] = useState(100); //for displaying error
+	const plotNormalGraph = (x0, Ans) => {
+		const x = [];
+		const y = [];
+		for (let i = Ans - x0; i <= Ans + x0; i += 0.01) {
+			x.push(i);
+			y.push(evaluate(Equation, { x: i }));
+		}
+		return { x, y };
+	};
 
 	const inputEquation = (event) => {
 		setEquation(event.target.value);
@@ -69,6 +83,7 @@ const NewtonRaphson = () => {
 		const x0Num = parseFloat(X0);
 		const esNum = parseFloat(Es);
 		CalNewton(x0Num, esNum);
+		setNormalGraphData(plotNormalGraph(x0Num, Ans));
 
 		setOutputTable(<NewtonRaphsonTable data={data} />);
 
@@ -88,6 +103,10 @@ const NewtonRaphson = () => {
 			document.removeEventListener("keydown", handleKeyPress);
 		};
 	}, [handleKeyPress]);
+
+	useEffect(() => {
+		setOutputTable(<NewtonRaphsonTable data={data} />);
+	}, [data]);
 
 	return (
 		<div className="max-w-5xl mx-auto">
@@ -142,12 +161,51 @@ const NewtonRaphson = () => {
 						Calculate
 					</button>
 				</form>
-
 				<h5 className="mb-4 text-white bg-gray-800 rounded-lg p-4 border-2 border-[#262626] flex justify-center">
 					Answer = {Ans.toPrecision(7)} | Total Iteration ={" "}
 					{Iteration == MAX ? "Max" : Iteration} | Error ={" "}
 					{inaccuracy.toPrecision(7)}
 				</h5>
+				<Plot
+					data={[
+						{
+							x: normalGraphData.x,
+							y: normalGraphData.y,
+							type: "scatter",
+							mode: "lines",
+							name: "Normal Graph",
+							line: { color: "orange", width: 1 },
+						},
+						{
+							x: data.map((inputX) => inputX.X),
+							y: data.map((inputY) => inputY.Y),
+							type: "scatter",
+							mode: "lines+markers",
+							name: "Bisection",
+							marker: { color: "yellow", size: 8 },
+							line: { color: "red", width: 2 },
+						},
+					]}
+					style={{
+						width: "100%",
+						height: "400px",
+					}}
+					layout={{
+						title: "Bisection",
+						xaxis: { title: "X Axis" },
+						yaxis: { title: "Y Axis" },
+						dragmode: "pan",
+						paper_bgcolor: "black",
+						plot_bgcolor: "black",
+					}}
+					config={{
+						displayModeBar: false, // Hide the modebar
+						scrollZoom: true, // Enable zoom with scroll
+						doubleClick: "reset", // Reset on double-click
+						displaylogo: false, // Hide Plotly logo
+					}}
+					useResizeHandler={true}
+				/>
 				{OutputTable}
 			</div>
 		</div>

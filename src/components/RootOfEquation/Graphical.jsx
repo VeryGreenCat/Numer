@@ -1,8 +1,20 @@
 import { useState, useEffect } from "react";
 import { evaluate } from "mathjs";
 import GraphicalTable from "./Table/GraphicalTable.jsx";
+import Plot from "react-plotly.js";
 
 const Graphical = () => {
+	const [normalGraphData, setNormalGraphData] = useState([]);
+	const [data, setData] = useState([]);
+	const [Equation, setEquation] = useState("43x-180");
+	const [XL, setXL] = useState(4);
+	const [XR, setXR] = useState(4.5);
+	const [Es, setEs] = useState("0.001");
+	const [Ans, setAns] = useState(0);
+	const [OutputTable, setOutputTable] = useState(null);
+	const [Iteration, setIteration] = useState(0); //for displaying iteration
+	const [inaccuracy, setInaccuracy] = useState(100); //for displaying error
+
 	let MAX = 50; //max iteration
 	const error = (xOld, xNew) => Math.abs((xNew - xOld) / xNew) * 100;
 
@@ -20,6 +32,7 @@ const Graphical = () => {
 		let step = Math.abs(xr - xl);
 		const e = es;
 		let obj = {};
+		let tempData = [];
 
 		scope = {
 			x: xr, //xr is the variable
@@ -40,10 +53,11 @@ const Graphical = () => {
 				iteration: "-",
 				step: "-",
 				X0: "-",
+				Y0: "-",
 				X1: "-",
 				error: "-",
 			};
-			data.push(obj);
+			tempData.push(obj);
 			return;
 		} else {
 			do {
@@ -63,10 +77,11 @@ const Graphical = () => {
 					iteration: iter,
 					step: step,
 					X0: x0,
+					Y0: fX0,
 					X1: x1,
 					error: ea,
 				};
-				data.push(obj);
+				tempData.push(obj);
 				if (fX0 * fX1 < 0) {
 					step /= 100;
 				}
@@ -74,20 +89,21 @@ const Graphical = () => {
 			} while (x1 <= xr && iter < MAX && ea > e);
 		}
 
+		setData(tempData);
 		setAns(x0);
 		setIteration(iter); //for displaying iteration
 		setInaccuracy(ea); //for displaying error
 	};
 
-	const data = [];
-	const [Equation, setEquation] = useState("43x-180");
-	const [XL, setXL] = useState(4);
-	const [XR, setXR] = useState(4.5);
-	const [Es, setEs] = useState("0.001");
-	const [Ans, setAns] = useState(0);
-	const [OutputTable, setOutputTable] = useState(null);
-	const [Iteration, setIteration] = useState(0); //for displaying iteration
-	const [inaccuracy, setInaccuracy] = useState(100); //for displaying error
+	const plotNormalGraph = (xl, xr) => {
+		const x = [];
+		const y = [];
+		for (let i = xl; i <= xr; i += 0.01) {
+			x.push(i);
+			y.push(evaluate(Equation, { x: i }));
+		}
+		return { x, y };
+	};
 
 	const inputEquation = (event) => {
 		setEquation(event.target.value);
@@ -119,6 +135,7 @@ const Graphical = () => {
 		const xrNum = parseFloat(XR);
 		const esNum = parseFloat(Es);
 		Calgraphical(xlNum, xrNum, esNum);
+		setNormalGraphData(plotNormalGraph(xlNum, xrNum));
 
 		setOutputTable(<GraphicalTable data={data} />);
 
@@ -138,6 +155,10 @@ const Graphical = () => {
 			document.removeEventListener("keydown", handleKeyPress);
 		};
 	}, [handleKeyPress]);
+
+	useEffect(() => {
+		setOutputTable(<GraphicalTable data={data} />);
+	}, [data]);
 
 	return (
 		<div className="max-w-5xl mx-auto">
@@ -208,6 +229,47 @@ const Graphical = () => {
 					Iteration = {Iteration == MAX ? "Max" : Iteration} | Error ={" "}
 					{inaccuracy == "NA" ? "NA" : inaccuracy.toPrecision(7)}
 				</h5>
+
+				<Plot
+					data={[
+						{
+							x: data.map((inputX) => inputX.X0),
+							y: data.map((inputY) => inputY.Y0),
+							type: "scatter",
+							mode: "markers",
+							name: "Bisection",
+							marker: { color: "yellow", size: 8 },
+							//line: { color: "red", width: 2 },
+						},
+						{
+							x: normalGraphData.x,
+							y: normalGraphData.y,
+							type: "scatter",
+							mode: "lines",
+							name: "Normal Graph",
+							line: { color: "orange", width: 1 },
+						},
+					]}
+					style={{
+						width: "100%",
+						height: "400px",
+					}}
+					layout={{
+						title: "Bisection",
+						xaxis: { title: "X Axis" },
+						yaxis: { title: "Y Axis" },
+						dragmode: "pan",
+						paper_bgcolor: "black",
+						plot_bgcolor: "black",
+					}}
+					config={{
+						displayModeBar: false, // Hide the modebar
+						scrollZoom: true, // Enable zoom with scroll
+						doubleClick: "reset", // Reset on double-click
+						displaylogo: false, // Hide Plotly logo
+					}}
+				/>
+
 				{OutputTable}
 			</div>
 		</div>

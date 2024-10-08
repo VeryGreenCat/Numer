@@ -2,7 +2,7 @@ import React from "react";
 
 function SecantTable({ data }) {
 	return (
-		<div className="overflow-x-auto mb-10 rounded-lg">
+		<div className="pt-4 overflow-x-auto mb-10 rounded-lg">
 			<table className="min-w-full table-auto text-sm text-left text-gray-500 dark:text-gray-400">
 				<thead className="text-xs text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
 					<tr>
