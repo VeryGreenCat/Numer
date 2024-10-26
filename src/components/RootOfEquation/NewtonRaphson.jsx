@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { evaluate, derivative } from "mathjs";
+import { evaluate, derivative, max, min } from "mathjs";
 import NewtonRaphsonTable from "./Table/NewtonRaphsonTable.jsx";
 import Plot from "react-plotly.js";
 
 const NewtonRaphson = () => {
 	const [normalGraphData, setNormalGraphData] = useState([]);
+	const [graphData, setGraphData] = useState([]);
 	const [data, setData] = useState([]);
-	const [Equation, setEquation] = useState("(x^2)-7");
-	const [X0, setX0] = useState(2);
+	const [Equation, setEquation] = useState("(x^3)-22");
+	const [X0, setX0] = useState(1.5);
 	const [Es, setEs] = useState("0.000001");
 	const [Ans, setAns] = useState(0);
 	const [OutputTable, setOutputTable] = useState(null);
@@ -18,6 +19,7 @@ const NewtonRaphson = () => {
 	const error = (xOld, xNew) => Math.abs((xNew - xOld) / xNew) * 100;
 
 	const CalNewton = (x0, es) => {
+		let start = x0;
 		let x1;
 		const fx = (x) => evaluate(Equation, { x: x });
 		const fdx = (x) => {
@@ -28,11 +30,17 @@ const NewtonRaphson = () => {
 		let obj = {};
 		const e = es;
 		let tempData = [];
+		let representData = [];
 
 		do {
 			iter++;
 			x1 = x0 - fx(x0) / fdx(x0);
 			ea = error(x0, x1);
+			obj = {
+				X: x0,
+				Y: 0,
+			};
+			representData.push(obj);
 			obj = {
 				iteration: iter,
 				X: x0,
@@ -40,8 +48,11 @@ const NewtonRaphson = () => {
 				error: ea,
 			};
 			tempData.push(obj);
+			representData.push(obj);
 			x0 = x1;
 		} while (ea > e && iter < MAX);
+
+		setGraphData(representData);
 
 		setData(tempData);
 		setAns(x0);
@@ -49,15 +60,22 @@ const NewtonRaphson = () => {
 		setInaccuracy(ea); //for displaying error
 	};
 
-	const plotNormalGraph = (x0, Ans) => {
-		const x = [];
-		const y = [];
-		for (let i = Ans - x0; i <= Ans + x0; i += 0.01) {
-			x.push(i);
-			y.push(evaluate(Equation, { x: i }));
-		}
-		return { x, y };
-	};
+	useEffect(() => {
+		const plotNormalGraph = () => {
+			const x = [];
+			const y = [];
+			if (data.length > 0) {
+				const Max = max(data.map((d) => d.X));
+				const Min = min(data.map((d) => d.X));
+				for (let i = Min; i <= Max; i += 0.01) {
+					x.push(i);
+					y.push(evaluate(Equation, { x: i }));
+				}
+				setNormalGraphData({ x, y });
+			}
+		};
+		plotNormalGraph();
+	}, [data, Equation]);
 
 	const inputEquation = (event) => {
 		setEquation(event.target.value);
@@ -83,7 +101,6 @@ const NewtonRaphson = () => {
 		const x0Num = parseFloat(X0);
 		const esNum = parseFloat(Es);
 		CalNewton(x0Num, esNum);
-		setNormalGraphData(plotNormalGraph(x0Num, Ans));
 
 		setOutputTable(<NewtonRaphsonTable data={data} />);
 
@@ -118,7 +135,7 @@ const NewtonRaphson = () => {
 						</label>
 						<div className="relative w-44 textInputWrapper">
 							<input
-								placeholder="(x^2)-7"
+								placeholder="(x^3)-22"
 								type="text"
 								className="w-full h-9 bg-[#262626] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="equation"
@@ -130,7 +147,7 @@ const NewtonRaphson = () => {
 						<label className="text-base text-white">X0:</label>
 						<div className="relative w-44 m-3 textInputWrapper">
 							<input
-								placeholder="2"
+								placeholder="1.5"
 								type="text"
 								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="X0"
@@ -177,11 +194,11 @@ const NewtonRaphson = () => {
 							line: { color: "orange", width: 1 },
 						},
 						{
-							x: data.map((inputX) => inputX.X),
-							y: data.map((inputY) => inputY.Y),
+							x: graphData.map((inputX) => inputX.X),
+							y: graphData.map((inputY) => inputY.Y),
 							type: "scatter",
 							mode: "lines+markers",
-							name: "Bisection",
+							name: "Newton Raphson",
 							marker: { color: "yellow", size: 8 },
 							line: { color: "red", width: 2 },
 						},
@@ -191,7 +208,7 @@ const NewtonRaphson = () => {
 						height: "400px",
 					}}
 					layout={{
-						title: "Bisection",
+						title: "Newton Raphson",
 						xaxis: { title: "X Axis" },
 						yaxis: { title: "Y Axis" },
 						dragmode: "pan",

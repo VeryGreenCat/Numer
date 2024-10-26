@@ -16,7 +16,8 @@
 	font-size: 90px;
 }
 
-.rootPage {
+.rootPage,
+.linearPage {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;

@@ -224,7 +224,7 @@ const FalsePosition = () => {
 							y: data.map((inputY) => inputY.Yi),
 							type: "scatter",
 							mode: "markers",
-							name: "Bisection",
+							name: "False Position",
 							marker: { color: "yellow", size: 8 },
 							//line: { color: "red", width: 2 },
 						},
@@ -242,7 +242,7 @@ const FalsePosition = () => {
 						height: "400px",
 					}}
 					layout={{
-						title: "Bisection",
+						title: "False Position",
 						xaxis: { title: "X Axis" },
 						yaxis: { title: "Y Axis" },
 						dragmode: "pan",

@@ -237,7 +237,7 @@ const Graphical = () => {
 							y: data.map((inputY) => inputY.Y0),
 							type: "scatter",
 							mode: "markers",
-							name: "Bisection",
+							name: "Graphical Method",
 							marker: { color: "yellow", size: 8 },
 							//line: { color: "red", width: 2 },
 						},
@@ -255,7 +255,7 @@ const Graphical = () => {
 						height: "400px",
 					}}
 					layout={{
-						title: "Bisection",
+						title: "Graphical Method",
 						xaxis: { title: "X Axis" },
 						yaxis: { title: "Y Axis" },
 						dragmode: "pan",

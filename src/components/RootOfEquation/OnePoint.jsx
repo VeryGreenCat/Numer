@@ -5,6 +5,7 @@ import Plot from "react-plotly.js";
 
 const OnePoint = () => {
 	const [normalGraphData, setNormalGraphData] = useState([]);
+	const [graphData, setGraphData] = useState([]);
 	const [data, setData] = useState([]);
 	const [Equation, setEquation] = useState("cos(x)");
 	const [X0, setX0] = useState(2);
@@ -18,6 +19,7 @@ const OnePoint = () => {
 	const error = (xOld, xNew) => Math.abs((xNew - xOld) / xNew) * 100;
 
 	const CalOnePoint = (x0, es) => {
+		let start = x0;
 		let x1;
 		const fx = (x) => evaluate(Equation, { x: x });
 		let e = es;
@@ -26,11 +28,19 @@ const OnePoint = () => {
 		let iter = 0;
 		let obj = {};
 		let tempData = [];
+		let representData = [];
 
 		do {
 			iter++;
 			x1 = fx(x0);
 			eNew = error(x0, x1);
+			console.log(x1);
+
+			if (Math.abs(x1) > 1e6) {
+				alert("Divergence detected: stopping calculation");
+				break; // Stop if divergence is detected
+			}
+
 			obj = {
 				iteration: iter,
 				X: x0,
@@ -38,24 +48,33 @@ const OnePoint = () => {
 				error: eNew,
 			};
 			tempData.push(obj);
+			representData.push(obj);
+
+			obj = {
+				X: x0,
+				Y: x0,
+			};
+			representData.push(obj); //use for representing graph
 			x0 = x1;
 			eOld = eNew;
 		} while (eNew > e && iter < MAX);
+
+		const plotNormalGraph = (x0, Ans) => {
+			const x = [];
+			const y = [];
+			for (let i = Ans - x0; i <= Ans + x0; i += 0.01) {
+				x.push(i);
+				y.push(evaluate(Equation, { x: i }));
+			}
+			return { x, y };
+		};
+		setNormalGraphData(plotNormalGraph(start, x0));
+		setGraphData(representData);
 
 		setData(tempData);
 		setAns(x0);
 		setIteration(iter); //for displaying iteration
 		setInaccuracy(eOld); //for displaying error
-	};
-
-	const plotNormalGraph = (x0, Ans) => {
-		const x = [];
-		const y = [];
-		for (let i = Ans - x0; i <= Ans + x0; i += 0.01) {
-			x.push(i);
-			y.push(evaluate(Equation, { x: i }));
-		}
-		return { x, y };
 	};
 
 	const inputEquation = (event) => {
@@ -82,7 +101,6 @@ const OnePoint = () => {
 		const x0Num = parseFloat(X0);
 		const esNum = parseFloat(Es);
 		CalOnePoint(x0Num, esNum);
-		setNormalGraphData(plotNormalGraph(x0Num, Ans));
 
 		setOutputTable(<OnePointTable data={data} />);
 
@@ -178,11 +196,11 @@ const OnePoint = () => {
 							line: { color: "orange", width: 1 },
 						},
 						{
-							x: data.map((inputX) => inputX.X),
-							y: data.map((inputY) => inputY.Y),
+							x: graphData.map((inputX) => inputX.X),
+							y: graphData.map((inputY) => inputY.Y),
 							type: "scatter",
 							mode: "lines+markers",
-							name: "Bisection",
+							name: "One Point Iteration",
 							marker: { color: "yellow", size: 8 },
 							line: { color: "red", width: 2 },
 						},
@@ -192,7 +210,7 @@ const OnePoint = () => {
 						height: "400px",
 					}}
 					layout={{
-						title: "Bisection",
+						title: "One Point Iteration",
 						xaxis: { title: "X Axis" },
 						yaxis: { title: "Y Axis" },
 						dragmode: "pan",

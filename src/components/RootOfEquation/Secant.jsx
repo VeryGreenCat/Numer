@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { evaluate } from "mathjs";
+import { evaluate, max, min } from "mathjs";
 import SecantTable from "./Table/SecantTable.jsx";
 import Plot from "react-plotly.js";
 
@@ -19,6 +19,7 @@ const Secant = () => {
 	const error = (xOld, xNew) => Math.abs((xNew - xOld) / xNew) * 100;
 
 	const CalSecant = (x0, x1, es) => {
+		let start = x0;
 		let xi;
 		let obj = {};
 		let ea = 100;
@@ -47,15 +48,23 @@ const Secant = () => {
 		setInaccuracy(ea); //for displaying error
 	};
 
-	const plotNormalGraph = (x0, Ans) => {
-		const x = [];
-		const y = [];
-		for (let i = Ans - x0; i <= Ans + x0; i += 0.01) {
-			x.push(i);
-			y.push(evaluate(Equation, { x: i }));
-		}
-		return { x, y };
-	};
+	useEffect(() => {
+		const plotNormalGraph = () => {
+			const x = [];
+			const y = [];
+			if (data.length > 0) {
+				const Max = max(data.map((d) => d.X));
+				const Min = min(data.map((d) => d.X));
+				for (let i = Min; i <= Max; i += 0.01) {
+					x.push(i);
+					y.push(evaluate(Equation, { x: i }));
+				}
+				setNormalGraphData({ x, y });
+			}
+		};
+
+		plotNormalGraph();
+	}, [data, Equation]);
 
 	const inputEquation = (event) => {
 		setEquation(event.target.value);
@@ -88,7 +97,6 @@ const Secant = () => {
 		const x1Num = parseFloat(X1);
 		const esNum = parseFloat(Es);
 		CalSecant(x0Num, x1Num, esNum);
-		setNormalGraphData(plotNormalGraph(x0Num, Ans));
 
 		setOutputTable(<SecantTable data={data} />);
 
@@ -200,7 +208,7 @@ const Secant = () => {
 							y: data.map((inputY) => inputY.Y),
 							type: "scatter",
 							mode: "lines+markers",
-							name: "Bisection",
+							name: "Secant",
 							marker: { color: "yellow", size: 8 },
 							line: { color: "red", width: 2 },
 						},
@@ -210,7 +218,7 @@ const Secant = () => {
 						height: "400px",
 					}}
 					layout={{
-						title: "Bisection",
+						title: "Secant",
 						xaxis: { title: "X Axis" },
 						yaxis: { title: "Y Axis" },
 						dragmode: "pan",

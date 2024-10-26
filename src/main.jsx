@@ -24,6 +24,8 @@ import MainContent from "./pages/MainContent.jsx";
 //import css
 import "./Css/global.css";
 
+document.documentElement.classList.add("dark"); //force dark mode
+
 createRoot(document.getElementById("root")).render(
 	<StrictMode>
 		<BrowserRouter>
