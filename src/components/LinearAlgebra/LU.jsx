@@ -52,7 +52,7 @@ function LU() {
 		console.log(obj);
 	};
 
-	function CalLU(A, B) {
+	const CalLU = (A, B) => {
 		const n = A.length;
 		const L = Array.from({ length: n }, () => Array(n).fill(0)); // Lower triangular matrix
 		const U = Array.from({ length: n }, () => Array(n).fill(0)); // Upper triangular matrix
@@ -105,7 +105,7 @@ function LU() {
 			x: x.map((value) => Fraction(value).toFraction()),
 			y: y.map((value) => Fraction(value).toFraction()),
 		};
-	}
+	};
 
 	return (
 		<div className="max-w-5xl mx-auto">
