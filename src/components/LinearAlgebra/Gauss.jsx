@@ -25,13 +25,13 @@ function Gauss() {
 
 	const MatrixValueChange = (row, col, value) => {
 		const newMatrix = [...matrix];
-		newMatrix[row][col] = parseFloat(value);
+		newMatrix[row][col] = value;
 		setMatrix(newMatrix);
 	};
 
 	const BValueChange = (index, value) => {
 		const newBmatrix = [...Bmatrix];
-		newBmatrix[index] = parseFloat(value);
+		newBmatrix[index] = value;
 		setBmatrix(newBmatrix);
 	};
 
@@ -40,7 +40,13 @@ function Gauss() {
 		console.log(Xmatrix);
 		console.log(Bmatrix);
 
-		setXmatrix(Calgauss(matrix, Bmatrix));
+		setXmatrix(
+			Calgauss(
+				matrix.map((row) => [...row]),
+				[...Bmatrix]
+			)
+		);
+
 		console.log(Xmatrix);
 	};
 
@@ -79,6 +85,7 @@ function Gauss() {
 				sum += A[i][j] * x[j];
 			}
 			x[i] = (B[i] - sum) / A[i][i];
+			x[i] = Math.round(x[i] * 1e6) / 1e6; // Rounds to 6 decimal places
 		}
 
 		return x;
@@ -87,7 +94,7 @@ function Gauss() {
 	return (
 		<div className="max-w-5xl mx-auto">
 			<div className="container p-4">
-				<form>
+				<form className="flex flex-col items-center justify-center">
 					<div className="mb-4 flex justify-center space-x-4 items-center">
 						<label className="text-base text-white">Input size:</label>
 						<div className="relative w-44 textInputWrapper">
@@ -109,7 +116,7 @@ function Gauss() {
 							Calculate
 						</button>
 					</div>
-
+					<h1 className="mx-2 text-2xl">Ax = B</h1>
 					<div className="mt-4 max-w-5xl mx-auto inline-flex justify-center items-center">
 						<div className="mx-2 space-y-2">
 							{matrix.map((row, rowIndex) => (
@@ -135,7 +142,7 @@ function Gauss() {
 									key={index}
 									placeholder="0"
 									type="text"
-									className="text-center w-11 h-11 bg-[#262626] text-[#e8e8e8] text-sm font-medium rounded-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
+									className="text-center w-24 h-11 bg-[#262626] text-[#e8e8e8] text-sm font-medium rounded-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 									value={value}
 									readOnly
 								/>
