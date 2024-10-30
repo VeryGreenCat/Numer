@@ -111,7 +111,7 @@ function Cholesky() {
 
 	return (
 		<div className="max-w-5xl mx-auto">
-			<div className="container p-4">
+			<div className="mb-4 container p-4">
 				<form className="flex flex-col items-center justify-center">
 					<div className="mb-4 flex justify-center space-x-4 items-center">
 						<label className="text-base text-white">Input size:</label>

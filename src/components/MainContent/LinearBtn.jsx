@@ -70,6 +70,12 @@ function LinearBtn() {
 						>
 							Cholesky Decomposition
 						</Link>
+						<Link
+							to="/ConjugateGradientPage"
+							className="text-xl w-[500px] text-center block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white hover:translate-x-[-5px] transition-all active:translate-y-[2px] rounded-md"
+						>
+							Conjugate Gradient
+						</Link>
 					</ul>
 				</div>
 			)}

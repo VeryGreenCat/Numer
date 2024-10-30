@@ -17,6 +17,7 @@ import GaussJordanPage from "./pages/LinearPage/GaussJordanPage.jsx";
 import MatrixInversionPage from "./pages/LinearPage/MatrixInversionPage.jsx";
 import LUPage from "./pages/LinearPage/LUPage.jsx";
 import CholeskyPage from "./pages/LinearPage/CholeskyPage.jsx";
+import ConjugateGradientPage from "./pages/LinearPage/ConjugateGradientPage.jsx";
 
 //import component
 import MainContent from "./pages/MainContent.jsx";
@@ -44,6 +45,10 @@ createRoot(document.getElementById("root")).render(
 				<Route path="/MatrixInversionPage" element={<MatrixInversionPage />} />
 				<Route path="/LUPage" element={<LUPage />} />
 				<Route path="/CholeskyPage" element={<CholeskyPage />} />
+				<Route
+					path="/ConjugateGradientPage"
+					element={<ConjugateGradientPage />}
+				/>
 			</Routes>
 		</BrowserRouter>
 	</StrictMode>
