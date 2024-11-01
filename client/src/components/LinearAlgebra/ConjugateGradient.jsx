@@ -1,6 +1,8 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { add, subtract, multiply, dot, transpose } from "mathjs";
+import ConjugateTable from "./Table/ConjugateTable.jsx";
+import Plot from "react-plotly.js";
 
 function ConjugateGradient() {
 	const [Amatrix, setAmatrix] = useState([
@@ -16,6 +18,7 @@ function ConjugateGradient() {
 	const [inaccuracy, setInaccuracy] = useState(100);
 	const [Es, setEs] = useState("0.000001");
 	const [numFields, setNumFields] = useState(3);
+	const [OutputTable, setOutputTable] = useState(null);
 
 	const MAX = 50;
 	const error = (R0) => Math.sqrt(dot(R0, R0));
@@ -39,11 +42,11 @@ function ConjugateGradient() {
 			X1 = add(X0, multiply(lambda, D0)); // X1 = X0 + lambda * D0
 			obj = {
 				iteration: iter,
-				X0: X0,
-				R0: R0,
-				D0: D0,
-				lambda: lambda,
-				error: error(R0),
+				X0: X0.map((value) => Math.round(value * 1e6) / 1e6),
+				R0: R0.map((value) => Math.round(value * 1e6) / 1e6),
+				D0: D0.map((value) => Math.round(value * 1e6) / 1e6),
+				lambda: Math.round(lambda * 1e6) / 1e6,
+				error: Math.round(error(R0) * 1e6) / 1e6,
 			};
 			tempData.push(obj);
 
@@ -51,7 +54,7 @@ function ConjugateGradient() {
 		} while (error(R0) > tol && iter < MAX);
 
 		setData(tempData);
-		setXmatrix(X1);
+		setXmatrix(X1.map((value) => Math.round(value * 1e6) / 1e6));
 		setIteration(iter);
 		setInaccuracy(error(R0));
 	};
@@ -70,10 +73,32 @@ function ConjugateGradient() {
 		setXmatrix(Array(num).fill("X"));
 	};
 
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		CalconjugateGradient(Amatrix, Bmatrix, X0matrix, Es);
+	const AValueChange = (row, col, value) => {
+		const newAmatrix = [...Amatrix];
+		newAmatrix[row][col] = value;
+		setAmatrix(newAmatrix);
 	};
+
+	const BValueChange = (index, value) => {
+		const newBmatrix = [...Bmatrix];
+		newBmatrix[index] = value;
+		setBmatrix(newBmatrix);
+	};
+
+	const X0ValueChange = (index, value) => {
+		const newX0matrix = [...X0matrix];
+		newX0matrix[index] = value;
+		setX0matrix(newX0matrix);
+	};
+
+	const handleSubmit = (event) => {
+		CalconjugateGradient(Amatrix, Bmatrix, X0matrix, Es);
+		setOutputTable(<ConjugateTable data={data} />);
+	};
+
+	useEffect(() => {
+		setOutputTable(<ConjugateTable data={data} />);
+	}, [data]);
 
 	return (
 		<div className="max-w-5xl mx-auto">
@@ -126,7 +151,7 @@ function ConjugateGradient() {
 											className="text-center w-11 h-11 bg-[#262626] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 											value={value}
 											onChange={(e) =>
-												MatrixValueChange(rowIndex, colIndex, e.target.value)
+												AValueChange(rowIndex, colIndex, e.target.value)
 											}
 										/>
 									))}
@@ -159,7 +184,93 @@ function ConjugateGradient() {
 							))}
 						</div>
 					</div>
+
+					<div className="mt-4 max-w-5xl mx-auto inline-flex justify-center items-center">
+						<h1 className="mx-2 text-2xl">
+							X<sub>0</sub> ={" "}
+						</h1>
+						<div className="mx-2 space-x-2">
+							{X0matrix.map((value, index) => (
+								<input
+									key={index}
+									placeholder="0"
+									type="text"
+									className="text-center w-11 h-11 bg-[#262626] text-[#e8e8e8] text-sm font-medium rounded-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
+									value={value}
+									onChange={(e) => X0ValueChange(index, e.target.value)}
+								/>
+							))}
+						</div>
+					</div>
 				</form>
+				<h5 className="mb-4 mt-4 text-white bg-gray-800 rounded-lg p-4 border-2 border-[#262626] flex justify-center">
+					Answer = [{Xmatrix.join(", ")}] | Total Iteration ={" "}
+					{Iteration == MAX ? "Max" : Iteration} | Error ={" "}
+					{inaccuracy.toPrecision(7)}
+				</h5>
+				<Plot
+					data={[
+						{
+							z: [
+								[100, 80, 60, 80, 100],
+								[80, 60, 40, 60, 80],
+								[60, 40, 20, 40, 60],
+								[80, 60, 40, 60, 80],
+								[100, 80, 60, 80, 100],
+							],
+							type: "surface",
+							colorscale: "Viridis",
+							showscale: true,
+							contours: {
+								z: {
+									show: true,
+									highlightwidth: 2,
+									highlightcolor: "#42f5e6",
+									project: { z: true },
+								},
+							},
+						},
+						{
+							x: data.map((item) => item.X0[0]),
+							y: data.map((item) => item.X0[1]),
+							z: data.map((item) => item.X0[2]),
+							type: "scatter3d",
+							mode: "markers+lines",
+							marker: {
+								size: 5,
+								color: data.map((item, index) => index),
+								colorscale: "Bluered",
+								colorbar: { title: "Iteration" },
+							},
+							line: {
+								color: "white",
+								width: 3,
+							},
+						},
+					]}
+					style={{
+						width: "100%",
+						height: "500px",
+					}}
+					layout={{
+						title: "Conjugate Gradient Method Path in 3D",
+						scene: {
+							xaxis: { title: "X0[0]", gridcolor: "gray" },
+							yaxis: { title: "X0[1]", gridcolor: "gray" },
+							zaxis: { title: "X0[2]", gridcolor: "gray" },
+							camera: {
+								eye: { x: 1.2, y: 1.2, z: 1.2 }, // Enhanced view angle
+							},
+							aspectratio: { x: 1, y: 1, z: 1 },
+							dragmode: "orbit",
+						},
+						paper_bgcolor: "black",
+						plot_bgcolor: "black",
+					}}
+					config={{ displaylogo: false, scrollZoom: true }}
+				/>
+
+				{OutputTable}
 			</div>
 		</div>
 	);

@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { evaluate, max, min } from "mathjs";
 import SecantTable from "./Table/SecantTable.jsx";
@@ -46,6 +47,35 @@ const Secant = () => {
 		setAns(xi);
 		setIteration(iter); //for displaying iteration
 		setInaccuracy(ea); //for displaying error
+
+		axios
+			.post(
+				`${import.meta.env.VITE_API_URL}/save/rootequation/all`,
+				{
+					equation: Equation,
+				},
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			)
+			.then((res) => {
+				//setSuccessText("Saved");
+				console.log("saved success");
+			})
+			.catch((err) => {
+				if (err.response) {
+					//setErrorText(`${err.response.data.message}`);
+					console.log("err.response.data.message");
+				} else if (err.request) {
+					//setErrorText("Server Down");
+					console.log("Server Down");
+				} else {
+					// setErrorText(`Error: ${err.message}`);
+					console.log("Error:", err.message);
+				}
+			});
 	};
 
 	useEffect(() => {

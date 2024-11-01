@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import History from "./components/history.jsx";
 
 //import Root of Equation pages
 import GraphicalPage from "./pages/RootPage/GraphicalPage.jsx";
@@ -30,6 +31,8 @@ document.documentElement.classList.add("dark"); //force dark mode
 createRoot(document.getElementById("root")).render(
 	<StrictMode>
 		<BrowserRouter>
+			<History />
+
 			<Routes>
 				<Route index element={<MainContent />} />
 				<Route path="/GraphicalPage" element={<GraphicalPage />} />

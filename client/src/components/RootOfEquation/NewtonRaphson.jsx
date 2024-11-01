@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { evaluate, derivative, max, min } from "mathjs";
 import NewtonRaphsonTable from "./Table/NewtonRaphsonTable.jsx";
@@ -8,7 +9,7 @@ const NewtonRaphson = () => {
 	const [graphData, setGraphData] = useState([]);
 	const [data, setData] = useState([]);
 	const [Equation, setEquation] = useState("(x^3)-22");
-	const [X0, setX0] = useState(1.5);
+	const [X0, setX0] = useState(100);
 	const [Es, setEs] = useState("0.000001");
 	const [Ans, setAns] = useState(0);
 	const [OutputTable, setOutputTable] = useState(null);
@@ -58,6 +59,35 @@ const NewtonRaphson = () => {
 		setAns(x0);
 		setIteration(iter); //for displaying iteration
 		setInaccuracy(ea); //for displaying error
+
+		axios
+			.post(
+				`${import.meta.env.VITE_API_URL}/save/rootequation/all`,
+				{
+					equation: Equation,
+				},
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			)
+			.then((res) => {
+				//setSuccessText("Saved");
+				console.log("saved success");
+			})
+			.catch((err) => {
+				if (err.response) {
+					//setErrorText(`${err.response.data.message}`);
+					console.log("err.response.data.message");
+				} else if (err.request) {
+					//setErrorText("Server Down");
+					console.log("Server Down");
+				} else {
+					// setErrorText(`Error: ${err.message}`);
+					console.log("Error:", err.message);
+				}
+			});
 	};
 
 	useEffect(() => {
@@ -147,7 +177,7 @@ const NewtonRaphson = () => {
 						<label className="text-base text-white">X0:</label>
 						<div className="relative w-44 m-3 textInputWrapper">
 							<input
-								placeholder="1.5"
+								placeholder="100"
 								type="text"
 								className="w-full h-9 bg-[#292929] text-[#e8e8e8] text-sm font-medium py-3 px-3 rounded-t-md shadow-lg placeholder-opacity-60 placeholder-white/60 focus:bg-[#353535] focus:outline-none transition-all"
 								id="X0"

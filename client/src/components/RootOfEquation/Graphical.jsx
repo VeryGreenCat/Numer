@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { evaluate } from "mathjs";
 import GraphicalTable from "./Table/GraphicalTable.jsx";
@@ -93,6 +94,35 @@ const Graphical = () => {
 		setAns(x0);
 		setIteration(iter); //for displaying iteration
 		setInaccuracy(ea); //for displaying error
+
+		axios
+			.post(
+				`${import.meta.env.VITE_API_URL}/save/rootequation/all`,
+				{
+					equation: Equation,
+				},
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			)
+			.then((res) => {
+				//setSuccessText("Saved");
+				console.log("saved success");
+			})
+			.catch((err) => {
+				if (err.response) {
+					//setErrorText(`${err.response.data.message}`);
+					console.log("err.response.data.message");
+				} else if (err.request) {
+					//setErrorText("Server Down");
+					console.log("Server Down");
+				} else {
+					// setErrorText(`Error: ${err.message}`);
+					console.log("Error:", err.message);
+				}
+			});
 	};
 
 	const plotNormalGraph = (xl, xr) => {

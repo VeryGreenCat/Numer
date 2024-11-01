@@ -1,5 +1,6 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
-import { evaluate } from "mathjs";
+import { evaluate, max, min } from "mathjs";
 import OnePointTable from "./Table/OnePointTable.jsx";
 import Plot from "react-plotly.js";
 
@@ -59,23 +60,59 @@ const OnePoint = () => {
 			eOld = eNew;
 		} while (eNew > e && iter < MAX);
 
-		const plotNormalGraph = (x0, Ans) => {
-			const x = [];
-			const y = [];
-			for (let i = Ans - x0; i <= Ans + x0; i += 0.01) {
-				x.push(i);
-				y.push(evaluate(Equation, { x: i }));
-			}
-			return { x, y };
-		};
-		setNormalGraphData(plotNormalGraph(start, x0));
 		setGraphData(representData);
 
 		setData(tempData);
 		setAns(x0);
 		setIteration(iter); //for displaying iteration
 		setInaccuracy(eOld); //for displaying error
+
+		axios
+			.post(
+				`${import.meta.env.VITE_API_URL}/save/rootequation/all`,
+				{
+					equation: Equation,
+				},
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			)
+			.then((res) => {
+				//setSuccessText("Saved");
+				console.log("saved success");
+			})
+			.catch((err) => {
+				if (err.response) {
+					//setErrorText(`${err.response.data.message}`);
+					console.log("err.response.data.message");
+				} else if (err.request) {
+					//setErrorText("Server Down");
+					console.log("Server Down");
+				} else {
+					// setErrorText(`Error: ${err.message}`);
+					console.log("Error:", err.message);
+				}
+			});
 	};
+
+	useEffect(() => {
+		const plotNormalGraph = () => {
+			const x = [];
+			const y = [];
+			if (data.length > 0) {
+				const Max = max(data.map((d) => d.X));
+				const Min = min(data.map((d) => d.X));
+				for (let i = Min; i <= Max; i += 0.01) {
+					x.push(i);
+					y.push(evaluate(Equation, { x: i }));
+				}
+				setNormalGraphData({ x, y });
+			}
+		};
+		plotNormalGraph();
+	}, [data, Equation]);
 
 	const inputEquation = (event) => {
 		setEquation(event.target.value);

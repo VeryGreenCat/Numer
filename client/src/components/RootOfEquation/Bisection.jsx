@@ -1,9 +1,11 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { evaluate } from "mathjs";
 import BisectionTable from "./Table/BisectionTable.jsx";
 import Plot from "react-plotly.js";
 
 const Bisection = () => {
+	//console.log(import.meta.env.VITE_API_URL);
 	const [normalGraphData, setNormalGraphData] = useState([]);
 	const [data, setData] = useState([]);
 	const [Equation, setEquation] = useState("(x^4)-13");
@@ -116,8 +118,36 @@ const Bisection = () => {
 		const esNum = parseFloat(Es);
 		Calbisection(xlNum, xrNum, esNum);
 		setNormalGraphData(plotNormalGraph(xlNum, xrNum));
-
 		setOutputTable(<BisectionTable data={data} />);
+
+		axios
+			.post(
+				`${import.meta.env.VITE_API_URL}/save/rootequation/all`,
+				{
+					equation: Equation,
+				},
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			)
+			.then((res) => {
+				//setSuccessText("Saved");
+				console.log("saved success");
+			})
+			.catch((err) => {
+				if (err.response) {
+					//setErrorText(`${err.response.data.message}`);
+					console.log("err.response.data.message");
+				} else if (err.request) {
+					//setErrorText("Server Down");
+					console.log("Server Down");
+				} else {
+					// setErrorText(`Error: ${err.message}`);
+					console.log("Error:", err.message);
+				}
+			});
 
 		console.log(data);
 	};
