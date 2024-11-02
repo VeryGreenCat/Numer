@@ -1,7 +1,6 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
 
-const uri =
-	"mongodb+srv://best:HprXJousLdz8vs2Z@myfirstdb.8e4l3.mongodb.net/?retryWrites=true&w=majority&appName=myFirstDB";
+const uri = process.env.VITE_MONGODB_URI;
 
 const client = new MongoClient(uri, {
 	serverApi: {
@@ -43,9 +42,12 @@ async function addDataToDatabase(topic, subTopic, data) {
 		}
 
 		const collection = database.collection(subTopic);
-		const dataLoad = collection.findOne(data);
-		if (dataLoad !== null) {
+		const dataLoad = await collection.findOne(data);
+		if (dataLoad === null) {
+			console.log(`Add ${topic} ${subTopic}`, data);
 			await collection.insertOne(data);
+		} else {
+			console.log(`Data already exists in ${topic} ${subTopic}`);
 		}
 	} catch (error) {
 		console.error(error);
