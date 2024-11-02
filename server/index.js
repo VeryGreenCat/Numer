@@ -6,7 +6,6 @@ const cors = require("cors"); // cross origin resource อนุญาติใ�
 // const helmet = require("helmet");
 const rateLimit = require("express-rate-limit"); // กันคนยิงเว็บรัวๆ
 const timeout = require("express-timeout-handler").handler;
-require("dotenv").config();
 
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yaml");

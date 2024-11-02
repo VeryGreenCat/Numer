@@ -31,7 +31,7 @@ RUN npm install --production
 # Environment variables
 ENV PORT=10000
 ENV NODE_ENV=production
-ENV VITE_MONGODB_URI=mongodb+srv://best:HprXJousLdz8vs2Z@myfirstdb.8e4l3.mongodb.net/?retryWrites=true&w=majority&appName=myFirstDB
+ENV MONGODB_URI=mongodb+srv://best:HprXJousLdz8vs2Z@myfirstdb.8e4l3.mongodb.net/?retryWrites=true&w=majority&appName=myFirstDB
 
 # Expose port
 EXPOSE 10000
