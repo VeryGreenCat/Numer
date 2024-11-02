@@ -15,6 +15,7 @@ FROM node:18-alpine as server-builder
 WORKDIR /app/server
 COPY server/package*.json ./
 RUN npm install
+RUN npm i dotenv
 COPY server/ ./
 
 # Production stage
