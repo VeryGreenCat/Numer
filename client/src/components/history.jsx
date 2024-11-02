@@ -9,6 +9,7 @@ function History() {
 	// Toggle sidebar visibility
 	const toggleSidebar = () => {
 		setIsSidebarVisible(!isSidebarVisible);
+		fetchData();
 	};
 
 	// Hide sidebar when clicking outside

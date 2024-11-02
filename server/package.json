@@ -20,8 +20,5 @@
 		"mongodb": "^6.10.0",
 		"swagger-ui-express": "^5.0.1",
 		"yaml": "^2.6.0"
-	},
-	"devDependencies": {
-		"dotenv": "^16.4.5"
 	}
 }
